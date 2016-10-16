@@ -1,5 +1,6 @@
 import React from 'react';
 import setupListeners from './timeline_fcns.js';
+import $ from "jquery";
 
 class Bill extends React.Component {
 
@@ -11,25 +12,18 @@ class Bill extends React.Component {
 
   addChart() {
     console.log("mouse entered");
-    addZeChart(this.props.supaKey);
+    // addZeChart(this.props.supaKey);
   }
 
   removeChart() {
     console.log("mouse left");
-    var chart = document.getElementById(this.props.supaKey);
-    chart.remove();
-    var billID = this.props.othaSupaKey;
-    var chartID = this.props.supaKey;
-    $('#'+billID).append('<div id='+chartID+'></div>')
-    // debugger;
+    // var chart = document.getElementById(this.props.supaKey);
+    // chart.remove();
+    // var billID = this.props.othaSupaKey;
+    // var chartID = this.props.supaKey;
+    // $('#'+billID).append('<div id='+chartID+'></div>')
   }
 
-  // <li id={this.props.othaSupaKey}>
-  //   <div onMouseEnter={this.addChart} onMouseLeave={this.removeChart}>
-  //     <time>{this.props.data.date}</time> {this.props.data.descrip}
-  //   </div>
-  //   <div id={this.props.supaKey}></div>
-  // </li>
   componentDidMount() {
     setupListeners();
   }
@@ -43,7 +37,7 @@ class Bill extends React.Component {
           <time>{year}</time>
           <p>{title}</p>
         </div>
-        <div id={supaKey}></div>
+        {/* <div id={supaKey}></div> */}
       </li>
 
     )
