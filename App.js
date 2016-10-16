@@ -31,7 +31,6 @@ class App extends React.Component {
       this.getSenator(lat + '%2C%20' + lng )
       this.getAssembly(lat + '%2C%20' + lng )
       this.getCongress(lat + '%2C%20' + lng )
-      $.fn.fullpage.moveSectionDown();
     })
   }
 
@@ -84,6 +83,8 @@ class App extends React.Component {
     })
     .done(function(response) {
       // bills w/ floor votes
+      $.fn.fullpage.moveSectionDown();
+      
       var floorVotes = response.result.items.filter(bill => bill.result.votes.items.length === 2);
       var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[1].memberVotes.items.AYE && bill.result.votes.items[1].memberVotes.items.NAY);
       var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[1].memberVotes.items.AYE.size) - (bill.result.votes.items[1].memberVotes.items.NAY.size)) < 20 )
@@ -114,8 +115,9 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-      $('#fullpage').fullpage();
-  }
+        $('#fullpage').fullpage({ 
+          autoScrolling: false });
+  };
 
   render() {
     return(
@@ -124,7 +126,7 @@ class App extends React.Component {
         <div className="section">
           <AddressForm getAddress={this.geocodeIt}/>
         </div>
-        <div className="section">
+        <div className="section" id="timeline">
           <RepInfoDisplay repDisplay={this.state.repInfo}/>
           <Timeline bills={this.state.bills}/>
         </div>
