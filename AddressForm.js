@@ -14,6 +14,7 @@ class AddressForm extends React.Component {
     this.refs.zip.value = ''
     this.props.getAddress(fullAddress)
   }
+
   render() {
     return(
       <form onSubmit={this.handleSubmit}>

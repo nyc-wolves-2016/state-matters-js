@@ -1,4 +1,5 @@
 import React from 'react';
+import Bill from './Bill.js';
 
 class Timeline extends React.Component {
 

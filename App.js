@@ -4,6 +4,7 @@ import RepInfoDisplay from './RepInfoDisplay';
 import Timeline from './Timeline';
 import Bill from './Bill';
 import $ from "jquery";
+import setupListeners from './timeline_fcns';
 
 class App extends React.Component {
   constructor() {
@@ -44,12 +45,14 @@ class App extends React.Component {
       method: 'get'
     })
     .done(function(response) {
-    }).fail(function(response) {
-      var foundRep = response.responseText;
+      // debugger;
+      var foundRep = response;
       foundRep = $.parseJSON(foundRep.slice(41, -2));
       foundRep = foundRep.rows[0];
       this.setState({repInfo: foundRep});
       this.getBills(foundRep[1])
+    }.bind(this))
+    .fail(function(response) {
     }.bind(this));
   }
 
