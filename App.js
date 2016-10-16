@@ -18,13 +18,6 @@ class App extends React.Component {
     }
   }
 
-  // $.ajax({
-  //
-  // }).fail(function(response) {
-  //
-  //   // setState to these bills
-  // }.bind(this));
-
   geocodeIt(fullAddress){
     $.ajax({
       url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
@@ -45,7 +38,6 @@ class App extends React.Component {
       method: 'get'
     })
     .done(function(response) {
-      // debugger;
       var foundRep = response;
       foundRep = $.parseJSON(foundRep.slice(41, -2));
       foundRep = foundRep.rows[0];
@@ -96,20 +88,24 @@ class App extends React.Component {
       var decision = "";
       var senatorVotes = closerFloorVotes.map(bill => {
         if (bill.result.votes.items[1].memberVotes.items.AYE.items.filter(senator => senator.fullName === repName).length > 0) {
-          return decision = "AYE"
+          return decision = "FOR"
         } else {
-          return decision = "NAY"
+          return decision = "AGAINST"
         };
-      })
+      });
+
+      var cleanBills = closerFloorVotes.map(bill => {
+        return {"title": bill.result.title,
+                "year": bill.result.year,
+                "yay": bill.result.votes.items[1].memberVotes.items.AYE.size,
+                "against": bill.result.votes.items[1].memberVotes.items.NAY.size,
+                "repDecision": decision,
+                "summary": bill.result.summary
+        }
+      });
+
       this.setState({
-        bills:
-          closerFloorVotes.map(bill => {
-            return {"title": bill.result.title,
-              "year": bill.result.year,
-              "for": bill.result.votes.items[1].memberVotes.items.AYE.size,
-              "against": bill.result.votes.items[1].memberVotes.items.NAY.size
-            }
-          })
+        bills: cleanBills
       })
     }.bind(this))
   }

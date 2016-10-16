@@ -61,15 +61,17 @@ h1 {
   background: inherit;
 }
 
-.timeline ul li div {
+.timeline ul li .big-box {
   position: relative;
   bottom: 0;
   width: 400px;
-  padding: 15px;
+  padding: 30px;
   background: #F45B69;
+  transition: background 0.5s;
+  -webkit-transition: background 0.5s;
 }
 
-.timeline ul li div::before {
+.timeline ul li .big-box::before {
   content: '';
   position: absolute;
   bottom: 7px;
@@ -78,26 +80,21 @@ h1 {
   border-style: solid;
 }
 
-.timeline ul li:nth-child(odd) div {
+.timeline ul li:nth-child(odd) .big-box {
   left: 45px;
 }
 
-.timeline ul li:nth-child(odd) div::before {
+.timeline ul li:nth-child(odd) .big-box::before {
   left: -15px;
   border-width: 8px 16px 8px 0;
   border-color: transparent #F45B69 transparent transparent;
 }
 
-.timeline ul li:nth-child(odd)  {
-
-}
-
-
-.timeline ul li:nth-child(even) div {
+.timeline ul li:nth-child(even) .big-box {
   left: -439px;
 }
 
-.timeline ul li:nth-child(even) div::before {
+.timeline ul li:nth-child(even) .big-box::before {
   right: -15px;
   border-width: 8px 0 8px 16px;
   border-color: transparent transparent transparent #F45B69;
@@ -122,21 +119,21 @@ time {
   background: #F45B69;
 }
 
-.timeline ul li div {
+.timeline ul li .big-box {
   visibility: hidden;
   opacity: 0;
   transition: all .5s ease-in-out;
 }
 
-.timeline ul li:nth-child(odd) div {
+.timeline ul li:nth-child(odd) .big-box {
   transform: translate3d(200px, 0, 0);
 }
 
-.timeline ul li:nth-child(even) div {
+.timeline ul li:nth-child(even) .big-box {
   transform: translate3d(-200px, 0, 0);
 }
 
-.timeline ul li.in-view div {
+.timeline ul li.in-view .big-box {
   transform: none;
   visibility: visible;
   opacity: 1;
@@ -147,10 +144,10 @@ time {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 @media screen and (max-width: 900px) {
-  .timeline ul li div {
+  .timeline ul li .big-box {
     width: 250px;
   }
-  .timeline ul li:nth-child(even) div {
+  .timeline ul li:nth-child(even) .big-box {
     left: -289px;
     /*250+45-6*/
   }
@@ -160,15 +157,34 @@ time {
   .timeline ul li {
     margin-left: 20px;
   }
-  .timeline ul li div {
+  .timeline ul li .big-box {
     width: calc(100vw - 91px);
   }
-  .timeline ul li:nth-child(even) div {
+  .timeline ul li:nth-child(even) .big-box {
     left: 45px;
   }
-  .timeline ul li:nth-child(even) div::before {
+  .timeline ul li:nth-child(even) .big-box::before {
     left: -15px;
     border-width: 8px 16px 8px 0;
     border-color: transparent #F45B69 transparent transparent;
   }
+}
+
+
+/* HOVER EFFECTS
+------------------------------------------------ */
+
+.hover-box {
+  display: none;
+}
+
+.timeline ul li .big-box:hover {
+  position: relative;
+  bottom: 0;
+  width: 400px;
+  background: #F45B69;
+}
+
+.big-box:hover .hover-box {
+  display: block;
 }

@@ -12,32 +12,48 @@ class Bill extends React.Component {
 
   addChart() {
     console.log("mouse entered");
-    // addZeChart(this.props.supaKey);
+    addZeChart(this.props.supaKey);
   }
 
   removeChart() {
     console.log("mouse left");
-    // var chart = document.getElementById(this.props.supaKey);
-    // chart.remove();
-    // var billID = this.props.othaSupaKey;
-    // var chartID = this.props.supaKey;
-    // $('#'+billID).append('<div id='+chartID+'></div>')
+    var chart = document.getElementById(this.props.supaKey);
+    chart.remove();
+    var billID = this.props.othaSupaKey;
+    var chartID = this.props.supaKey;
+    $('#'+billID).append('<div id='+chartID+'></div>')
   }
 
   componentDidMount() {
     setupListeners();
   }
 
+
+  // <li id={othaSupaKey}>
+  //   <div onMouseEnter={this.addChart} onMouseLeave={this.removeChart}>
+  //     <time>{year}</time>
+  //     <p>{title}</p>
+  //   </div>
+  //   <div id={supaKey}></div>
+  // </li>
+
+
+
   render() {
-    let {year, title} = this.props.data
+    let {year, title, yay, against, repDecision, summary} = this.props.data
     let {supaKey, othaSupaKey} = this.props
     return(
       <li id={othaSupaKey}>
-        <div onMouseEnter={this.addChart} onMouseLeave={this.removeChart}>
-          <time>{year}</time>
-          <p>{title}</p>
+        <div className="big-box">
+          <p>title: {title}</p>
+          <p>reps decision: {repDecision}</p>
+          <p>hover details</p>
+          <div className="hover-box">
+            <p>summary: {summary}</p>
+            <p>for: {yay}</p>
+            <p>against: {against}</p>
+          </div>
         </div>
-        {/* <div id={supaKey}></div> */}
       </li>
 
     )
