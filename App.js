@@ -122,7 +122,6 @@ class App extends React.Component {
   render() {
     return(
       <div ref="test" id="fullpage">
-        <h2>We in dis parent-most, App component, yung stunna.</h2>
         <div className="section">
           <AddressForm getAddress={this.geocodeIt}/>
         </div>
