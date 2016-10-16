@@ -67,9 +67,8 @@ h1 {
   width: 400px;
   padding: 30px;
   background: #F45B69;
-  transition: height 0.5s;
-  -webkit-transition: height 0.5s;
-  overflow: hidden;
+  transition: background 0.5s;
+  -webkit-transition: background 0.5s;
 }
 
 .timeline ul li .big-box::before {
