@@ -6,11 +6,6 @@ var config = {
       filename: 'index.js',
    },
 
-   devServer: {
-      inline: true,
-      port: process.env.PORT || 3000
-   },
-
    module: {
       loaders: [
          {
