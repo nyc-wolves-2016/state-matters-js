@@ -5,6 +5,9 @@ import Timeline from './Timeline';
 import Bill from './Bill';
 import $ from "jquery";
 import setupListeners from './timeline_fcns';
+import jquery from 'jquery';
+import fullpage from 'fullpage.js';
+
 
 class App extends React.Component {
   constructor() {
@@ -28,7 +31,7 @@ class App extends React.Component {
       this.getSenator(lat + '%2C%20' + lng )
       this.getAssembly(lat + '%2C%20' + lng )
       this.getCongress(lat + '%2C%20' + lng )
-
+      $.fn.fullpage.moveSectionDown();
     })
   }
 
@@ -110,13 +113,21 @@ class App extends React.Component {
     }.bind(this))
   }
 
+  componentDidMount(){
+      $('#fullpage').fullpage();
+  }
+
   render() {
     return(
-      <div>
+      <div ref="test" id="fullpage">
         <h2>We in dis parent-most, App component, yung stunna.</h2>
-        <AddressForm getAddress={this.geocodeIt}/>
-        <RepInfoDisplay repDisplay={this.state.repInfo}/>
-        <Timeline bills={this.state.bills}/>
+        <div className="section">
+          <AddressForm getAddress={this.geocodeIt}/>
+        </div>
+        <div className="section">
+          <RepInfoDisplay repDisplay={this.state.repInfo}/>
+          <Timeline bills={this.state.bills}/>
+        </div>
       </div>
     )
   }
