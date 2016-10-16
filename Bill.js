@@ -21,11 +21,7 @@ class Bill extends React.Component {
 
   removeChart() {
     console.log("mouse left");
-    var chart = document.getElementById(this.props.supaKey);
-    chart.remove();
-    var billID = this.props.othaSupaKey;
-    var chartID = this.props.supaKey;
-    $('#'+billID).append('<div id='+chartID+'></div>')
+    $('#'+this.props.supaKey).remove();
   }
 
   componentDidMount() {
@@ -33,7 +29,6 @@ class Bill extends React.Component {
     $.fn.fullpage.setAutoScrolling(false);
     $.fn.fullpage.setFitToSection(false);
     setupListeners();
-    setupPieChart();
   }
 
   componentDidUpdate() {
@@ -56,7 +51,8 @@ class Bill extends React.Component {
     let {supaKey, othaSupaKey} = this.props
     return(
       <li id={othaSupaKey}>
-        <div onMouseEnter={this.addChart} className="big-box">
+        <div onMouseEnter={this.addChart} onMouseLeave={this.removeChart} className="big-box">
+
           <p>title: {title}</p>
           <p>reps decision: {repDecision}</p>
           <p>hover details</p>
@@ -64,7 +60,7 @@ class Bill extends React.Component {
             <p>summary: {summary}</p>
             <p>for: {yay}</p>
             <p>against: {against}</p>
-            <canvas id="voteChart"></canvas>
+            <canvas className="voteChart" id={supaKey}></canvas>
           </div>
         </div>
       </li>

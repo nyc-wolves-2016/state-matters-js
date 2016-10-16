@@ -1,6 +1,6 @@
 function setupPieChart() {
 
-  const CHART = document.getElementById("voteChart");
+  const CHART = document.getElementsByClassName("voteChart");
 
   Chart.defaults.global.responsive = true;
   Chart.defaults.global.defaultFontSize = 20;
@@ -14,7 +14,7 @@ function setupPieChart() {
     ],
     datasets: [
         {
-            data: [300, 100],
+            data: [100, 100],
             backgroundColor: [
                 "red",
                 "blue"
@@ -27,7 +27,7 @@ function setupPieChart() {
       ]
   };
 
-  let lineChart = new Chart(CHART, {
+  let pieChart = new Chart(CHART, {
     type: "pie",
     data: data
   });
