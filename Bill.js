@@ -1,8 +1,10 @@
 import React from 'react';
 import setupListeners from './timeline_fcns.js';
+import setupPieChart from './VoteChart.js';
 import $ from "jquery";
 import {IScroll} from 'fullpage.js';
 import fullpage from 'fullpage.js';
+
 
 class Bill extends React.Component {
 
@@ -14,7 +16,7 @@ class Bill extends React.Component {
 
   addChart() {
     console.log("mouse entered");
-    addZeChart(this.props.supaKey);
+    setupPieChart();
   }
 
   removeChart() {
@@ -31,6 +33,7 @@ class Bill extends React.Component {
     $.fn.fullpage.setAutoScrolling(false);
     $.fn.fullpage.setFitToSection(false);
     setupListeners();
+    setupPieChart();
   }
 
   componentDidUpdate() {
@@ -53,7 +56,7 @@ class Bill extends React.Component {
     let {supaKey, othaSupaKey} = this.props
     return(
       <li id={othaSupaKey}>
-        <div className="big-box">
+        <div onMouseEnter={this.addChart} className="big-box">
           <p>title: {title}</p>
           <p>reps decision: {repDecision}</p>
           <p>hover details</p>
@@ -61,6 +64,7 @@ class Bill extends React.Component {
             <p>summary: {summary}</p>
             <p>for: {yay}</p>
             <p>against: {against}</p>
+            <canvas id="voteChart"></canvas>
           </div>
         </div>
       </li>

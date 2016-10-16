@@ -1,0 +1,61 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'chart.js',
+1 verbose cli   '--save' ]
+2 info using npm@3.10.3
+3 info using node@v6.7.0
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData chart.js
+8 silly fetchOtherPackageData chart.js
+9 silly cache add args [ 'chart.js', null ]
+10 verbose cache add spec chart.js
+11 silly cache add parsed spec Result {
+11 silly cache add   raw: 'chart.js',
+11 silly cache add   scope: null,
+11 silly cache add   escapedName: 'chart.js',
+11 silly cache add   name: null,
+11 silly cache add   rawSpec: 'chart.js',
+11 silly cache add   spec: '/Users/jonmarchand/Desktop/jons-code/final-project/state-matters-js/chart.js',
+11 silly cache add   type: 'local' }
+12 silly addLocalTarball shasum (computed) da39a3ee5e6b4b0d3255bfef95601890afd80709
+13 verbose addTmpTarball /Users/jonmarchand/Desktop/jons-code/final-project/state-matters-js/chart.js not in flight; adding
+14 verbose correctMkdir /Users/jonmarchand/.npm correctMkdir not in flight; initializing
+15 verbose addTmpTarball validating metadata from /Users/jonmarchand/Desktop/jons-code/final-project/state-matters-js/chart.js
+16 verbose tar unpack /Users/jonmarchand/Desktop/jons-code/final-project/state-matters-js/chart.js
+17 verbose tar unpacking to /var/folders/sc/gf863nbx2b97djhvyg3g7ctc0000gn/T/npm-54926-3e3da60a/unpack-c7844832
+18 silly gentlyRm /var/folders/sc/gf863nbx2b97djhvyg3g7ctc0000gn/T/npm-54926-3e3da60a/unpack-c7844832 is being purged
+19 verbose gentlyRm don't care about contents; nuking /var/folders/sc/gf863nbx2b97djhvyg3g7ctc0000gn/T/npm-54926-3e3da60a/unpack-c7844832
+20 silly gunzTarPerm modes [ '755', '644' ]
+21 error tar.unpack error reading /Users/jonmarchand/Desktop/jons-code/final-project/state-matters-js/chart.js
+22 error addLocal Could not install /Users/jonmarchand/Desktop/jons-code/final-project/state-matters-js/chart.js
+23 silly fetchPackageMetaData Error: 0-byte tarball
+23 silly fetchPackageMetaData Please run `npm cache clean`
+23 silly fetchPackageMetaData     at /usr/local/lib/node_modules/npm/lib/utils/tar.js:276:14
+23 silly fetchPackageMetaData     at FSReqWrap.oncomplete (fs.js:123:15)
+23 silly fetchPackageMetaData  error for chart.js Error: 0-byte tarball
+23 silly fetchPackageMetaData Please run `npm cache clean`
+23 silly fetchPackageMetaData     at /usr/local/lib/node_modules/npm/lib/utils/tar.js:276:14
+23 silly fetchPackageMetaData     at FSReqWrap.oncomplete (fs.js:123:15)
+24 silly rollbackFailedOptional Starting
+25 silly rollbackFailedOptional Finishing
+26 silly runTopLevelLifecycles Starting
+27 silly runTopLevelLifecycles Finishing
+28 silly install printInstalled
+29 verbose stack Error: 0-byte tarball
+29 verbose stack Please run `npm cache clean`
+29 verbose stack     at /usr/local/lib/node_modules/npm/lib/utils/tar.js:276:14
+29 verbose stack     at FSReqWrap.oncomplete (fs.js:123:15)
+30 verbose cwd /Users/jonmarchand/Desktop/jons-code/final-project/state-matters-js
+31 error Darwin 15.5.0
+32 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "chart.js" "--save"
+33 error node v6.7.0
+34 error npm  v3.10.3
+35 error 0-byte tarball
+35 error Please run `npm cache clean`
+36 error If you need help, you may report this error at:
+36 error     <https://github.com/npm/npm/issues>
+37 verbose exit [ 1, true ]
