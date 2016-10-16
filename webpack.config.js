@@ -2,14 +2,15 @@ var config = {
    entry: './main.js',
 
    output: {
-      path:'./',
+      path: __dirname,
+      publicPath: '/',
       filename: 'index.js',
    },
 
    module: {
       loaders: [
          {
-            test: /\.jsx?$/,
+            test: /\.js$/,
             exclude: /node_modules/,
             loader: 'babel',
 
