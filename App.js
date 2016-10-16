@@ -83,7 +83,6 @@ class App extends React.Component {
     })
     .done(function(response) {
       // bills w/ floor votes
-      $.fn.fullpage.moveSectionDown();
       
       var floorVotes = response.result.items.filter(bill => bill.result.votes.items.length === 2);
       var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[1].memberVotes.items.AYE && bill.result.votes.items[1].memberVotes.items.NAY);
@@ -115,19 +114,24 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-        $('#fullpage').fullpage({ 
-          autoScrolling: false });
+        $('#fullpage').fullpage({
+          anchors:['firstPage', 'secondPage']
+        });
   };
 
   render() {
     return(
       <div ref="test" id="fullpage">
         <div className="section">
-          <AddressForm getAddress={this.geocodeIt}/>
-        </div>
-        <div className="section" id="timeline">
-          <RepInfoDisplay repDisplay={this.state.repInfo}/>
-          <Timeline bills={this.state.bills}/>
+          <div className="slide">
+            <AddressForm getAddress={this.geocodeIt}/>
+          </div>
+          <div className="slide">
+            <RepInfoDisplay repDisplay={this.state.repInfo}/>
+            <Timeline bills={this.state.bills}/>
+          </div>
+          <div className="fp-controlArrow fp-next"></div>
+          <div className="fp-controlArrow fp-next"></div>
         </div>
       </div>
     )
