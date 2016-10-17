@@ -57,17 +57,14 @@ class Bill extends React.Component {
     return(
       <li id={othaSupaKey}>
         <div className="big-box">
-
-          <p>title: {title}</p>
-          <p>reps decision: {repDecision}</p>
-          <p>hover details</p>
+          <p>TITLE: {title}</p>
+          <p>REPS DECISION: {repDecision}</p>
+          <p>HOVER FOR MORE INFO</p>
           <div className="hover-box">
-
-            <p>summary: {summary}</p>
-            <p>for: {yay}</p>
-            <p>against: {against}</p>
+            <p>SUMMARY: {summary}</p>
+            <p>FOR: {yay}</p>
+            <p>AGAINST: {against}</p>
             <p><canvas ref="chart" className="voteChart" id={supaKey}></canvas></p>
-
           </div>
         </div>
       </li>

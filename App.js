@@ -15,10 +15,13 @@ class App extends React.Component {
     super();
     this.geocodeIt = this.geocodeIt.bind(this);
     this.getBills = this.getBills.bind(this);
+    this.yearClicked = this.yearClicked.bind(this);
+    this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.state = {
       repInfo: {},
       bills: [
       ],
+      currentBills: [],
       showLoading: false,
       showForm: true
     }
@@ -80,6 +83,7 @@ class App extends React.Component {
     });
   }
 
+  // gets all bills from 2016
   getBills(repName) {
     $.ajax({
         url: "http://legislation.nysenate.gov/api/3/bills/2015/search?term=votes.size:>0%20AND%20year:2016&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
@@ -88,7 +92,8 @@ class App extends React.Component {
     .done(function(response) {
       // bills w/ floor votes
       this.setState({showLoading: false, showForm: true});
-    $.fn.fullpage.moveSlideRight();
+
+      $.fn.fullpage.moveSlideRight();
 
 
       var floorVotes = response.result.items.filter(bill => bill.result.votes.items.length === 2);
@@ -114,14 +119,82 @@ class App extends React.Component {
         }
       });
 
+      var allBills = response.result.items
+
       this.setState({
-        bills: cleanBills
+        bills: allBills
       })
+
+      this.setState({
+        currentBills: cleanBills
+      })
+
     }.bind(this))
   }
 
+
   componentDidMount(){
-        $('#fullpage').fullpage({scrollOverflow: true})
+    $('#fullpage').fullpage({scrollOverflow: true})
+  }
+
+  yearClicked() {
+    var allBills = this.state.bills
+    var floorVotes = allBills.filter(bill => bill.result.votes.items.length === 2);
+    var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[1].memberVotes.items.AYE && bill.result.votes.items[1].memberVotes.items.NAY);
+    var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[1].memberVotes.items.AYE.size) - (bill.result.votes.items[1].memberVotes.items.NAY.size)) < 20 )
+
+    var decision = "";
+    var senatorVotes = closerFloorVotes.map(bill => {
+      if (bill.result.votes.items[1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.repInfo[1]).length > 0) {
+        return decision = "for"
+      } else {
+        return decision = "against"
+      };
+    });
+
+    var cleanBills = closerFloorVotes.map(bill => {
+      return {"title": bill.result.title,
+              "year": bill.result.year,
+              "yay": bill.result.votes.items[1].memberVotes.items.AYE.size,
+              "against": bill.result.votes.items[1].memberVotes.items.NAY.size,
+              "repDecision": decision,
+              "summary": bill.result.summary
+      }
+    });
+
+    this.setState({
+      currentBills: cleanBills
+    })
+  }
+
+  sponsoredClicked() {
+    var allSponsoredBills = this.state.bills.filter(bill => bill.result.sponsor.member !== null);
+    var repSponsoredBills = allSponsoredBills.filter(bill => bill.result.sponsor.member.fullName === this.state.repInfo[1]);
+    debugger;
+    var cleanRepSponsoredBills = repSponsoredBills.map(bill => {
+      return {"title": bill.result.title,
+              "year": bill.result.year,
+              "summary": bill.result.summary,
+
+              // if (bill.result.votes.items[1].memberVotes.items.AYE.size > 0) {
+              //   "yay": bill.result.votes.items[1].memberVotes.items.AYE.size
+              // } else {
+              //   "yay": "N/A"
+              // }
+
+              // if (bill.result.votes.items[1].memberVotes.items.NAY.size > 0) {
+              //   "against": bill.result.votes.items[1].memberVotes.items.NAY.size
+              // } else {
+              //   "against": "N/A"
+              // }
+
+              "repDecision": "N/A"
+      }
+    });
+
+    this.setState({
+      currentBills: cleanRepSponsoredBills
+    })
   }
 
   render() {
@@ -137,7 +210,9 @@ class App extends React.Component {
           </div>
           <div className="slide">
             <RepInfoDisplay repDisplay={this.state.repInfo}/>
-            <Timeline bills={this.state.bills}/>
+            <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button>
+            <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button>
+            <Timeline bills={this.state.currentBills}/>
           </div>
           <div className="fp-controlArrow fp-next"></div>
           <div className="fp-controlArrow fp-next"></div>
