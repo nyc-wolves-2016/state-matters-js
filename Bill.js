@@ -54,13 +54,13 @@ class Bill extends React.Component {
 
 
   render() {
-    let {year, title, yay, nay, repDecision, summary, status, date} = this.props.data
+    let {year, title, yay, nay, senatorDecision, summary, status, date} = this.props.data
     let {supaKey, othaSupaKey} = this.props
     return(
       <li id={othaSupaKey}>
         <div className="big-box">
           <p>TITLE: {title}</p>
-          <p>REPS DECISION: {repDecision}</p>
+          <p>YOUR SENATORS DECISION: {senatorDecision}</p>
           <p>HOVER FOR MORE INFO</p>
           <div className="hover-box">
             <p>SUMMARY: {summary}</p>

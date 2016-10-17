@@ -19,9 +19,8 @@ class App extends React.Component {
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
     this.state = {
-      repInfo: {},
-      bills: [
-      ],
+      senatorInfo: {},
+      bills: [],
       currentBills: [],
       showLoading: false,
       showForm: true
@@ -51,7 +50,18 @@ class App extends React.Component {
       var foundRep = response;
       foundRep = $.parseJSON(foundRep.slice(41, -2));
       foundRep = foundRep.rows[0];
-      this.setState({repInfo: foundRep});
+      debugger;
+      var senatorFirstLast = foundRep[1].split(" ");
+      var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+      var repObj = {
+        district: foundRep[0],
+        fullName: foundRep[1],
+        firstLast: senatorFirstLast,
+        web: foundRep[2],
+        population: foundRep[3]
+      }
+      foundRep.push(senatorFirstLast);
+      this.setState({senatorInfo: repObj});
       // save district to its own state
       // retrieve later when non-default year is specified
       this.getBills(foundRep[1])
@@ -98,9 +108,7 @@ class App extends React.Component {
 
       $.fn.fullpage.moveSlideRight();
 
-      // var floorVotes = response.result.items.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
-      // var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
-      // var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
+      var allBills = response.result.items;
 
       var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
       var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
@@ -109,48 +117,35 @@ class App extends React.Component {
       var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
 
       var senatorVotes = allBills.map(bill => {
-        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === senatorName).length > 0) {
-          return "yay"
-        } else {
-          return "nay"
-        };
-      });
-        // if (!bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE) {
-        //   if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === senatorName).length > 0) { return "nay" }
-        //   else { return "n/a" }
-        // } else if (!bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY) {
-        //   if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === senatorName).length > 0) { return "yay" }
-        //   else { return "n/a" }
-        // }
-
-      var senatorVotes = allBills.map(bill => {
-        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === senatorName).length > 0) { return "yay" }
-        else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === senatorName).length > 0) { return "nay" }
+        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === senatorName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
+        else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === senatorName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
         else { return "n/a" }
       })
 
-
-
-      var cleanBills = closerFloorVotes.map((bill, i) => {
-        return {"title": bill.result.title,
-                "year": bill.result.year,
-                "yay": yaysArray[i],
-                "nay": naysArray[i],
-                "senatorDecision": senatorVotes[i],
-                "summary": bill.result.summary,
-                "status": bill.result.status.statusDesc,
-                "date": bill.result.status.actionDate
+      var cleanBills = allBills.map((bill, i) => {
+        return {title: bill.result.title,
+                year: bill.result.year,
+                yay: yaysArray[i].size,
+                nay: naysArray[i].size,
+                senatorDecision: senatorVotes[i],
+                summary: bill.result.summary,
+                status: bill.result.status.statusDesc,
+                date: bill.result.status.actionDate,
+                billId: bill.result.basePrintNoStr
         }
       });
 
-      var theYear = billYear.toString();
-      this.setState({
-        bills: [...this.setState.bills, {theYear: allbills}]
-      })
+      var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+
+      // var theYear = billYear.toString();
 
       this.setState({
-        currentBills: cleanBills
-      })
+        bills: cleanBills
+      });
+
+      this.setState({
+        currentBills: cleanCloserVoteBills
+      });
 
     }.bind(this))
   }
@@ -161,32 +156,35 @@ class App extends React.Component {
   }
 
   yearClicked() {
-    var floorVotes = this.state.bills.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
-    var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
-    var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
+    // var floorVotes = this.state.bills.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
+    // var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+    // var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
 
-    var senatorVotes = closerFloorVotes.map(bill => {
-      if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.repInfo[1]).length > 0) {
-        return "yay"
-      } else {
-        return "nay"
-      };
-    });
+    // var senatorVotes = closerFloorVotes.map(bill => {
+    //   if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.repInfo[1]).length > 0) {
+    //     return "yay"
+    //   } else {
+    //     return "nay"
+    //   };
+    // });
 
-    var cleanBills = closerFloorVotes.map((bill, i) => {
-      return {"title": bill.result.title,
-              "year": bill.result.year,
-              "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
-              "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
-              "repDecision": senatorVotes[i],
-              "summary": bill.result.summary,
-              "status": bill.result.status.statusDesc,
-              "date": bill.result.status.actionDate
-      }
-    });
+    // var cleanBills = closerFloorVotes.map((bill, i) => {
+    //   return {"title": bill.result.title,
+    //           "year": bill.result.year,
+    //           "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
+    //           "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
+    //           "senatorDecision": senatorVotes[i],
+    //           "summary": bill.result.summary,
+    //           "status": bill.result.status.statusDesc,
+    //           "date": bill.result.status.actionDate
+    //   }
+    // });
+
+    var cleanCloserVoteBills = this.state.bills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+
 
     this.setState({
-      currentBills: cleanBills
+      currentBills: cleanCloserVoteBills
     })
   }
 
@@ -241,7 +239,7 @@ class App extends React.Component {
             }
           </div>
           <div className="slide">
-            <RepInfoDisplay repDisplay={this.state.repInfo}/>
+            <RepInfoDisplay repDisplay={this.state.senatorInfo}/>
               <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button>
               <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button>
               <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
