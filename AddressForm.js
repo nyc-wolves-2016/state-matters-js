@@ -30,17 +30,34 @@ class AddressForm extends React.Component {
 
   render() {
     return(
-      <div style={this.formStyle()} onSubmit={this.handleSubmit}>
-        <form>
-          <label htmlFor="address">Address Line 1:</label>
-          <input name="address" ref="address" type="text"></input>
-          <label htmlFor="city">City:</label>
-          <input name="city" ref="city" type="text"></input>
-          <label htmlFor="zip">Zip 5</label>
-          <input name="zip" ref="zip" type="text"></input>
-          <input type="submit" value="Find my State Reps"></input>
-        </form>
-    </div>
+        <div className="materialize">
+          <div id="main-form" className="row" style={this.formStyle()}>
+              <form onSubmit={this.handleSubmit} className="col s12">
+
+                <div className="row">
+                  <div className="input-field col s5">
+                    <input name="address" ref="address" id="address" type="text" className="validate" />
+                    <label htmlFor="address">Address</label>
+                  </div>
+
+                  <div className="input-field col s5">
+                    <input name="city" ref="city" id="city" type="text" className="validate" />
+                    <label htmlFor="city">City</label>
+                  </div>
+
+                  <div className="input-field col s2">
+                    <input name="zip" ref="zip" id="zip" type="text" className="validate" />
+                    <label htmlFor="zip">Zip</label>
+                  </div>
+                </div>
+
+                <button id="supaButton" className="btn waves-effect waves-light" type="submit" name="action">Find My Reps
+                    <i className="material-icons right">send</i>
+                </button>
+
+              </form>
+        </div>
+      </div>
     )
   }
 }
