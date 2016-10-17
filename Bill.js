@@ -4,48 +4,51 @@ import $ from "jquery";
 import {IScroll} from 'fullpage.js';
 import fullpage from 'fullpage.js';
 
+
 class Bill extends React.Component {
 
   constructor() {
     super();
-    this.addChart = this.addChart.bind(this);
-    this.removeChart = this.removeChart.bind(this);
   }
 
-  addChart() {
-    console.log("mouse entered");
-    addZeChart(this.props.supaKey);
-  }
-
-  removeChart() {
-    console.log("mouse left");
-    var chart = document.getElementById(this.props.supaKey);
-    chart.remove();
-    var billID = this.props.othaSupaKey;
-    var chartID = this.props.supaKey;
-    $('#'+billID).append('<div id='+chartID+'></div>')
-  }
 
   componentDidMount() {
     $.fn.fullpage.reBuild();
     $.fn.fullpage.setAutoScrolling(false);
     $.fn.fullpage.setFitToSection(false);
+    let {year, title, yay, against, repDecision, summary} = this.props.data
+
     setupListeners();
+
+    var data = {
+      labels: [
+          "Yay",
+          "Nay"
+      ],
+      datasets: [
+          {
+              data: [yay, against],
+              backgroundColor: [
+                  "red",
+                  "blue"
+              ],
+              hoverBackgroundColor: [
+                  "#FF6384",
+                  "#36A2EB"
+              ]
+          }
+        ]
+    };
+
+    let pieChart = new Chart(this.refs.chart, {
+      type: "pie",
+      data: data
+    });
   }
 
   componentDidUpdate() {
 
   }
-
-
-  // <li id={othaSupaKey}>
-  //   <div onMouseEnter={this.addChart} onMouseLeave={this.removeChart}>
-  //     <time>{year}</time>
-  //     <p>{title}</p>
-  //   </div>
-  //   <div id={supaKey}></div>
-  // </li>
-
 
 
   render() {
@@ -54,13 +57,17 @@ class Bill extends React.Component {
     return(
       <li id={othaSupaKey}>
         <div className="big-box">
+
           <p>title: {title}</p>
           <p>reps decision: {repDecision}</p>
           <p>hover details</p>
           <div className="hover-box">
+
             <p>summary: {summary}</p>
             <p>for: {yay}</p>
             <p>against: {against}</p>
+            <p><canvas ref="chart" className="voteChart" id={supaKey}></canvas></p>
+
           </div>
         </div>
       </li>
@@ -68,5 +75,8 @@ class Bill extends React.Component {
     )
   }
 }
+
+
+
 
 export default Bill;
