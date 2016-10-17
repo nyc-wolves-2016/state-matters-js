@@ -87,9 +87,9 @@ class App extends React.Component {
   }
 
 
-  getBills(repName, sessionYear=2015, year=2016) {
+  getBills(senatorName, sessionYear=2015, billYear=2016) {
     $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=votes.size:>0%20AND%20year:" + year + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
+        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
         method: "GET"
     })
     .done(function(response) {
@@ -98,35 +98,54 @@ class App extends React.Component {
 
       $.fn.fullpage.moveSlideRight();
 
-      var floorVotes = response.result.items.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
-      var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
-      var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
+      // var floorVotes = response.result.items.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
+      // var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+      // var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
 
-      var senatorVotes = closerFloorVotes.map(bill => {
-        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === repName).length > 0) {
+      var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+      var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
+
+      var yays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE);
+      var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
+
+      var senatorVotes = allBills.map(bill => {
+        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === senatorName).length > 0) {
           return "yay"
         } else {
           return "nay"
         };
       });
+        // if (!bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE) {
+        //   if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === senatorName).length > 0) { return "nay" }
+        //   else { return "n/a" }
+        // } else if (!bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY) {
+        //   if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === senatorName).length > 0) { return "yay" }
+        //   else { return "n/a" }
+        // }
+
+      var senatorVotes = allBills.map(bill => {
+        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === senatorName).length > 0) { return "yay" }
+        else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === senatorName).length > 0) { return "nay" }
+        else { return "n/a" }
+      })
+
 
 
       var cleanBills = closerFloorVotes.map((bill, i) => {
         return {"title": bill.result.title,
                 "year": bill.result.year,
-                "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
-                "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
-                "repDecision": senatorVotes[i],
+                "yay": yaysArray[i],
+                "nay": naysArray[i],
+                "senatorDecision": senatorVotes[i],
                 "summary": bill.result.summary,
                 "status": bill.result.status.statusDesc,
                 "date": bill.result.status.actionDate
         }
       });
 
-      var allBills = response.result.items
-
+      var theYear = billYear.toString();
       this.setState({
-        bills: allBills
+        bills: [...this.setState.bills, {theYear: allbills}]
       })
 
       this.setState({
