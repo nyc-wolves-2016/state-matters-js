@@ -31,7 +31,7 @@ class AddressForm extends React.Component {
   render() {
     return(
         <div className="materialize">
-          <div id="main-form" className="row">
+          <div id="main-form" className="row" style={this.formStyle()}>
               <form onSubmit={this.handleSubmit} className="col s12">
 
                 <div className="row">
