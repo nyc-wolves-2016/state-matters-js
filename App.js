@@ -64,7 +64,7 @@ class App extends React.Component {
       this.setState({senatorInfo: repObj});
       // save district to its own state
       // retrieve later when non-default year is specified
-      this.getBills(foundRep[1])
+      this.getBills()
     }.bind(this))
     .fail(function(response) {
     }.bind(this));
@@ -97,7 +97,7 @@ class App extends React.Component {
   }
 
 
-  getBills(senatorName, sessionYear=2015, billYear=2016) {
+  getBills(sessionYear=2015, billYear=2016) {
     $.ajax({
         url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
         method: "GET"
@@ -117,8 +117,8 @@ class App extends React.Component {
       var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
 
       var senatorVotes = allBills.map(bill => {
-        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === senatorName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
-        else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === senatorName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
+        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
+        else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
         else { return "n/a" }
       })
 
