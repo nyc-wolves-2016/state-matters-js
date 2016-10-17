@@ -16,12 +16,13 @@ class Bill extends React.Component {
 
   addChart() {
     console.log("mouse entered");
-    setupPieChart();
+      setupPieChart();
   }
 
   removeChart() {
     console.log("mouse left");
-    $('#'+this.props.supaKey).remove();
+    setupPieChart()
+      // $('#'+this.props.supaKey).remove();
   }
 
   componentDidMount() {
@@ -34,16 +35,6 @@ class Bill extends React.Component {
   componentDidUpdate() {
 
   }
-
-
-  // <li id={othaSupaKey}>
-  //   <div onMouseEnter={this.addChart} onMouseLeave={this.removeChart}>
-  //     <time>{year}</time>
-  //     <p>{title}</p>
-  //   </div>
-  //   <div id={supaKey}></div>
-  // </li>
-
 
 
   render() {
@@ -60,7 +51,7 @@ class Bill extends React.Component {
             <p>summary: {summary}</p>
             <p>for: {yay}</p>
             <p>against: {against}</p>
-            <canvas className="voteChart" id={supaKey}></canvas>
+            <p><canvas className="voteChart" id={supaKey}></canvas></p>
           </div>
         </div>
       </li>
