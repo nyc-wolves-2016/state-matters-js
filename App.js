@@ -7,6 +7,7 @@ import $ from "jquery";
 import setupListeners from './timeline_fcns';
 import {IScroll} from 'fullpage.js';
 import fullpage from 'fullpage.js';
+import Loading from './Loading.js';
 
 
 class App extends React.Component {
@@ -17,12 +18,14 @@ class App extends React.Component {
     this.state = {
       repInfo: {},
       bills: [
-      ]
+      ],
+      showLoading: false,
+      showForm: true
     }
   }
 
   geocodeIt(fullAddress){
-
+    this.setState({showLoading: true, showForm: false})
     $.ajax({
       url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
     })
@@ -84,7 +87,9 @@ class App extends React.Component {
     })
     .done(function(response) {
       // bills w/ floor votes
+      this.setState({showLoading: false, showForm: true});
     $.fn.fullpage.moveSlideRight();
+
 
       var floorVotes = response.result.items.filter(bill => bill.result.votes.items.length === 2);
       var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[1].memberVotes.items.AYE && bill.result.votes.items[1].memberVotes.items.NAY);
@@ -124,7 +129,11 @@ class App extends React.Component {
       <div ref="test" id="fullpage">
         <div className="section">
           <div className="slide">
-            <AddressForm getAddress={this.geocodeIt}/>
+            <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
+            {this.state.showLoading ?
+              <Loading /> :
+              null
+            }
           </div>
           <div className="slide">
             <RepInfoDisplay repDisplay={this.state.repInfo}/>

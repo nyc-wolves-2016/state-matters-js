@@ -1,0 +1,19 @@
+#loading {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top-color: #ff6a00;
+  border-radius: 100%;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  animation: round 2s linear infinite;
+}
+
+@keyframes round{
+  from{transform: rotate(0deg)}
+  to{transform: rotate(360deg)}
+}
