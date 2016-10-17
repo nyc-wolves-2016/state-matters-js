@@ -95,26 +95,24 @@ class App extends React.Component {
 
       $.fn.fullpage.moveSlideRight();
 
+      var floorVotes = response.result.items.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
+      var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+      var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
 
-      var floorVotes = response.result.items.filter(bill => bill.result.votes.items.length === 2);
-      var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[1].memberVotes.items.AYE && bill.result.votes.items[1].memberVotes.items.NAY);
-      var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[1].memberVotes.items.AYE.size) - (bill.result.votes.items[1].memberVotes.items.NAY.size)) < 20 )
-
-      var decision = "";
       var senatorVotes = closerFloorVotes.map(bill => {
-        if (bill.result.votes.items[1].memberVotes.items.AYE.items.filter(senator => senator.fullName === repName).length > 0) {
-          return decision = "FOR"
+        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === repName).length > 0) {
+          return "for"
         } else {
-          return decision = "AGAINST"
+          return "against"
         };
       });
 
-      var cleanBills = closerFloorVotes.map(bill => {
+      var cleanBills = closerFloorVotes.map((bill, i) => {
         return {"title": bill.result.title,
                 "year": bill.result.year,
-                "yay": bill.result.votes.items[1].memberVotes.items.AYE.size,
-                "against": bill.result.votes.items[1].memberVotes.items.NAY.size,
-                "repDecision": decision,
+                "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
+                "against": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
+                "repDecision": senatorVotes[i],
                 "summary": bill.result.summary
         }
       });
@@ -138,26 +136,24 @@ class App extends React.Component {
   }
 
   yearClicked() {
-    var allBills = this.state.bills
-    var floorVotes = allBills.filter(bill => bill.result.votes.items.length === 2);
-    var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[1].memberVotes.items.AYE && bill.result.votes.items[1].memberVotes.items.NAY);
-    var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[1].memberVotes.items.AYE.size) - (bill.result.votes.items[1].memberVotes.items.NAY.size)) < 20 )
+    var floorVotes = this.state.bills.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
+    var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+    var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
 
-    var decision = "";
     var senatorVotes = closerFloorVotes.map(bill => {
-      if (bill.result.votes.items[1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.repInfo[1]).length > 0) {
-        return decision = "for"
+      if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.repInfo[1]).length > 0) {
+        return "for"
       } else {
-        return decision = "against"
+        return "against"
       };
     });
 
-    var cleanBills = closerFloorVotes.map(bill => {
+    var cleanBills = closerFloorVotes.map((bill, i) => {
       return {"title": bill.result.title,
               "year": bill.result.year,
-              "yay": bill.result.votes.items[1].memberVotes.items.AYE.size,
-              "against": bill.result.votes.items[1].memberVotes.items.NAY.size,
-              "repDecision": decision,
+              "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
+              "against": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
+              "repDecision": senatorVotes[i],
               "summary": bill.result.summary
       }
     });
@@ -168,27 +164,16 @@ class App extends React.Component {
   }
 
   sponsoredClicked() {
-    var allSponsoredBills = this.state.bills.filter(bill => bill.result.sponsor.member !== null);
+    var floorVoteBills = this.state.bills.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
+    var allSponsoredBills = floorVoteBills.filter(bill => bill.result.sponsor.member !== null);
     var repSponsoredBills = allSponsoredBills.filter(bill => bill.result.sponsor.member.fullName === this.state.repInfo[1]);
-    debugger;
     var cleanRepSponsoredBills = repSponsoredBills.map(bill => {
       return {"title": bill.result.title,
               "year": bill.result.year,
               "summary": bill.result.summary,
-
-              // if (bill.result.votes.items[1].memberVotes.items.AYE.size > 0) {
-              //   "yay": bill.result.votes.items[1].memberVotes.items.AYE.size
-              // } else {
-              //   "yay": "N/A"
-              // }
-
-              // if (bill.result.votes.items[1].memberVotes.items.NAY.size > 0) {
-              //   "against": bill.result.votes.items[1].memberVotes.items.NAY.size
-              // } else {
-              //   "against": "N/A"
-              // }
-
-              "repDecision": "N/A"
+              "repDecision": "N/A",
+              "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
+              "against": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size
       }
     });
 
