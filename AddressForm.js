@@ -32,7 +32,7 @@ class AddressForm extends React.Component {
     return(
         <div className="materialize">
           <div id="main-form" className="row" style={this.formStyle()}>
-              <form onSubmit={this.handleSubmit} className="col s12">
+              <form onSubmit={this.handleSubmit} className="col s12" autoComplete="off">
 
                 <div className="row">
                   <div className="input-field col s5">
