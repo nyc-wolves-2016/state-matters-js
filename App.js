@@ -126,7 +126,7 @@ class App extends React.Component {
           <div className="slide">
             <AddressForm getAddress={this.geocodeIt}/>
           </div>
-          <div id="urmom" className="slide">
+          <div className="slide">
             <RepInfoDisplay repDisplay={this.state.repInfo}/>
             <Timeline bills={this.state.bills}/>
           </div>
