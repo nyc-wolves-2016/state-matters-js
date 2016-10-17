@@ -16,9 +16,11 @@ class Bill extends React.Component {
     $.fn.fullpage.reBuild();
     $.fn.fullpage.setAutoScrolling(false);
     $.fn.fullpage.setFitToSection(false);
-    let {year, title, yay, against, repDecision, summary} = this.props.data
+    let {year, title, yay, nay, repDecision, summary} = this.props.data
 
     setupListeners();
+
+    Chart.defaults.global.defaultFontColor = "white";
 
     var data = {
       labels: [
@@ -27,7 +29,7 @@ class Bill extends React.Component {
       ],
       datasets: [
           {
-              data: [yay, against],
+              data: [yay, nay],
               backgroundColor: [
                   "red",
                   "blue"
@@ -52,22 +54,21 @@ class Bill extends React.Component {
 
 
   render() {
-    let {year, title, yay, against, repDecision, summary} = this.props.data
+    let {year, title, yay, nay, repDecision, summary, status, date} = this.props.data
     let {supaKey, othaSupaKey} = this.props
     return(
       <li id={othaSupaKey}>
         <div className="big-box">
-
-          <p>title: {title}</p>
-          <p>reps decision: {repDecision}</p>
-          <p>hover details</p>
+          <p>TITLE: {title}</p>
+          <p>REPS DECISION: {repDecision}</p>
+          <p>HOVER FOR MORE INFO</p>
           <div className="hover-box">
-
-            <p>summary: {summary}</p>
-            <p>for: {yay}</p>
-            <p>against: {against}</p>
+            <p>SUMMARY: {summary}</p>
+            <p>YAY: {yay}</p>
+            <p>NAY: {nay}</p>
+            <p>STATUS: {status}</p>
+            <p>ACTION DATE: {date}</p>
             <p><canvas ref="chart" className="voteChart" id={supaKey}></canvas></p>
-
           </div>
         </div>
       </li>

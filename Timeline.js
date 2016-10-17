@@ -9,9 +9,11 @@ import setupListeners from './timeline_fcns';
 
 
 class Timeline extends React.Component {
+
   constructor() {
     super();
   }
+
 
   componentDidUpdate() {
 
@@ -25,6 +27,11 @@ class Timeline extends React.Component {
         <section className="intro">
           <div className="container">
             <h1>Vertical Timeline &darr;</h1>
+          </div>
+        </section>
+
+        <section className="filter-tabs">
+          <div className="all-bills">
           </div>
         </section>
 
