@@ -5,7 +5,7 @@ import Timeline from './Timeline';
 import Bill from './Bill';
 import $ from "jquery";
 import setupListeners from './timeline_fcns';
-import jquery from 'jquery';
+import {IScroll} from 'fullpage.js';
 import fullpage from 'fullpage.js';
 
 
@@ -22,6 +22,7 @@ class App extends React.Component {
   }
 
   geocodeIt(fullAddress){
+
     $.ajax({
       url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
     })
@@ -83,7 +84,8 @@ class App extends React.Component {
     })
     .done(function(response) {
       // bills w/ floor votes
-      
+    $.fn.fullpage.moveSlideRight();
+
       var floorVotes = response.result.items.filter(bill => bill.result.votes.items.length === 2);
       var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[1].memberVotes.items.AYE && bill.result.votes.items[1].memberVotes.items.NAY);
       var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[1].memberVotes.items.AYE.size) - (bill.result.votes.items[1].memberVotes.items.NAY.size)) < 20 )
@@ -114,10 +116,8 @@ class App extends React.Component {
   }
 
   componentDidMount(){
-        $('#fullpage').fullpage({
-          anchors:['firstPage', 'secondPage']
-        });
-  };
+        $('#fullpage').fullpage({scrollOverflow: true})
+  }
 
   render() {
     return(
@@ -126,7 +126,7 @@ class App extends React.Component {
           <div className="slide">
             <AddressForm getAddress={this.geocodeIt}/>
           </div>
-          <div className="slide">
+          <div id="urmom" className="slide">
             <RepInfoDisplay repDisplay={this.state.repInfo}/>
             <Timeline bills={this.state.bills}/>
           </div>

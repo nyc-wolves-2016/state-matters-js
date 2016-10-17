@@ -21,20 +21,12 @@ function setupListeners() {
   function toggleAppearance() {
     // debugger;
     for (var i = 0; i < items.length; i++) {
-      if (isElementInViewport(items[i])) {
+      
         items[i].classList.add("in-view");
-        console.log("sth's in view");
-      } else {
-        items[i].classList.remove("in-view");
       }
-    }
   }
 
-  // listen for events
-  window.addEventListener("load", toggleAppearance);
-  window.addEventListener("resize", toggleAppearance);
-  window.addEventListener("scroll", toggleAppearance);
-
+  toggleAppearance();
 }
 
 export default setupListeners;
