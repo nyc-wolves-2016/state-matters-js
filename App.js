@@ -52,6 +52,8 @@ class App extends React.Component {
       foundRep = $.parseJSON(foundRep.slice(41, -2));
       foundRep = foundRep.rows[0];
       this.setState({repInfo: foundRep});
+      // save district to its own state
+      // retrieve later when non-default year is specified
       this.getBills(foundRep[1])
     }.bind(this))
     .fail(function(response) {
