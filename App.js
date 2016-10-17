@@ -17,6 +17,7 @@ class App extends React.Component {
     this.getBills = this.getBills.bind(this);
     this.yearClicked = this.yearClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
+    this.keywordSearch = this.keywordSearch.bind(this);
     this.state = {
       repInfo: {},
       bills: [
@@ -175,13 +176,12 @@ class App extends React.Component {
     var allSponsoredBills = floorVoteBills.filter(bill => bill.result.sponsor.member !== null);
     var repSponsoredBills = allSponsoredBills.filter(bill => bill.result.sponsor.member.fullName === repShortName);
 
-    // if (repSponsoredBills.forEach(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY === undefined && repSponsoredBills.forEach.result.votes.items[repSponsoredBills[0].result.votes.items.length-1].memberVotes.items.AYE) { repSponsoredBills[0].result.votes.items[repSponsoredBills[0].result.votes.items.length-1].memberVotes.items.AYE.size }
-
     var nays = repSponsoredBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY)
     var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } } )
 
     var yays = repSponsoredBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE)
     var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } } )
+
     var cleanRepSponsoredBills = repSponsoredBills.map((bill, i) => {
       return {"title": bill.result.title,
               "year": bill.result.year,
@@ -196,6 +196,15 @@ class App extends React.Component {
 
     this.setState({
       currentBills: cleanRepSponsoredBills
+    })
+  }
+
+  keywordSearch(event) {
+    event.preventDefault();
+    var searchTerm = this.refs.keywordBox.value;
+    var relevantBills = this.state.bills.filter(bill => bill.result.summary.includes(searchTerm));
+    var cleanRelevantBills = relevantBills.map(bill => {
+
     })
   }
 
@@ -214,6 +223,13 @@ class App extends React.Component {
             <RepInfoDisplay repDisplay={this.state.repInfo}/>
               <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button>
               <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button>
+              <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
+                <div className="keyword-search-box">
+                  <label htmlFor="t">search for bills by keyword:</label>
+                  <input ref="keywordBox" type="text"/>
+                </div>
+                <input type="submit" value="search"/>
+              </form>
             <Timeline bills={this.state.currentBills}/>
           </div>
           <div className="fp-controlArrow fp-next"></div>
