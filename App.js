@@ -5,6 +5,9 @@ import Timeline from './Timeline';
 import Bill from './Bill';
 import $ from "jquery";
 import setupListeners from './timeline_fcns';
+import {IScroll} from 'fullpage.js';
+import fullpage from 'fullpage.js';
+
 
 class App extends React.Component {
   constructor() {
@@ -19,6 +22,7 @@ class App extends React.Component {
   }
 
   geocodeIt(fullAddress){
+
     $.ajax({
       url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
     })
@@ -28,7 +32,6 @@ class App extends React.Component {
       this.getSenator(lat + '%2C%20' + lng )
       this.getAssembly(lat + '%2C%20' + lng )
       this.getCongress(lat + '%2C%20' + lng )
-
     })
   }
 
@@ -81,6 +84,8 @@ class App extends React.Component {
     })
     .done(function(response) {
       // bills w/ floor votes
+    $.fn.fullpage.moveSlideRight();
+
       var floorVotes = response.result.items.filter(bill => bill.result.votes.items.length === 2);
       var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[1].memberVotes.items.AYE && bill.result.votes.items[1].memberVotes.items.NAY);
       var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[1].memberVotes.items.AYE.size) - (bill.result.votes.items[1].memberVotes.items.NAY.size)) < 20 )
@@ -110,13 +115,24 @@ class App extends React.Component {
     }.bind(this))
   }
 
+  componentDidMount(){
+        $('#fullpage').fullpage({scrollOverflow: true})
+  }
+
   render() {
     return(
-      <div>
-        <h2>We in dis parent-most, App component, yung stunna.</h2>
-        <AddressForm getAddress={this.geocodeIt}/>
-        <RepInfoDisplay repDisplay={this.state.repInfo}/>
-        <Timeline bills={this.state.bills}/>
+      <div ref="test" id="fullpage">
+        <div className="section">
+          <div className="slide">
+            <AddressForm getAddress={this.geocodeIt}/>
+          </div>
+          <div className="slide">
+            <RepInfoDisplay repDisplay={this.state.repInfo}/>
+            <Timeline bills={this.state.bills}/>
+          </div>
+          <div className="fp-controlArrow fp-next"></div>
+          <div className="fp-controlArrow fp-next"></div>
+        </div>
       </div>
     )
   }

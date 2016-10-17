@@ -1,6 +1,8 @@
 import React from 'react';
 import setupListeners from './timeline_fcns.js';
 import $ from "jquery";
+import {IScroll} from 'fullpage.js';
+import fullpage from 'fullpage.js';
 
 class Bill extends React.Component {
 
@@ -25,7 +27,14 @@ class Bill extends React.Component {
   }
 
   componentDidMount() {
+    $.fn.fullpage.reBuild();
+    $.fn.fullpage.setAutoScrolling(false);
+    $.fn.fullpage.setFitToSection(false);
     setupListeners();
+  }
+
+  componentDidUpdate() {
+
   }
 
 
