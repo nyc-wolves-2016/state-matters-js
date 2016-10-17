@@ -210,8 +210,8 @@ class App extends React.Component {
           </div>
           <div className="slide">
             <RepInfoDisplay repDisplay={this.state.repInfo}/>
-            <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button>
-            <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button>
+              <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button>
+              <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button>
             <Timeline bills={this.state.currentBills}/>
           </div>
           <div className="fp-controlArrow fp-next"></div>
