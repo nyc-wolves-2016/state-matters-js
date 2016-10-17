@@ -101,9 +101,9 @@ class App extends React.Component {
 
       var senatorVotes = closerFloorVotes.map(bill => {
         if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === repName).length > 0) {
-          return "for"
+          return "yay"
         } else {
-          return "against"
+          return "nay"
         };
       });
 
@@ -111,7 +111,7 @@ class App extends React.Component {
         return {"title": bill.result.title,
                 "year": bill.result.year,
                 "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
-                "against": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
+                "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
                 "repDecision": senatorVotes[i],
                 "summary": bill.result.summary
         }
@@ -142,9 +142,9 @@ class App extends React.Component {
 
     var senatorVotes = closerFloorVotes.map(bill => {
       if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.repInfo[1]).length > 0) {
-        return "for"
+        return "yay"
       } else {
-        return "against"
+        return "nay"
       };
     });
 
@@ -152,7 +152,7 @@ class App extends React.Component {
       return {"title": bill.result.title,
               "year": bill.result.year,
               "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
-              "against": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
+              "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
               "repDecision": senatorVotes[i],
               "summary": bill.result.summary
       }
@@ -164,16 +164,26 @@ class App extends React.Component {
   }
 
   sponsoredClicked() {
+    var repShortName = this.state.repInfo[1].split(" ")
+    repShortName = repShortName[0] + " " + repShortName[2]
     var floorVoteBills = this.state.bills.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
     var allSponsoredBills = floorVoteBills.filter(bill => bill.result.sponsor.member !== null);
-    var repSponsoredBills = allSponsoredBills.filter(bill => bill.result.sponsor.member.fullName === this.state.repInfo[1]);
-    var cleanRepSponsoredBills = repSponsoredBills.map(bill => {
+    var repSponsoredBills = allSponsoredBills.filter(bill => bill.result.sponsor.member.fullName === repShortName);
+
+    // if (repSponsoredBills.forEach(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY === undefined && repSponsoredBills.forEach.result.votes.items[repSponsoredBills[0].result.votes.items.length-1].memberVotes.items.AYE) { repSponsoredBills[0].result.votes.items[repSponsoredBills[0].result.votes.items.length-1].memberVotes.items.AYE.size }
+
+    var nays = repSponsoredBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY)
+    var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } } )
+
+    var yays = repSponsoredBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE)
+    var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } } )
+    var cleanRepSponsoredBills = repSponsoredBills.map((bill, i) => {
       return {"title": bill.result.title,
               "year": bill.result.year,
               "summary": bill.result.summary,
               "repDecision": "N/A",
-              "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
-              "against": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size
+              "yay": yaysArray[i].size,
+              "nay": naysArray[i].size
       }
     });
 
