@@ -7,3 +7,12 @@
   text-transform: none;
   margin-left: 37%;
 }
+
+#rep-info * {
+  background-color: inherit;
+  border: none;
+}
+
+#rep-info span {
+  color: #868c88;
+}
