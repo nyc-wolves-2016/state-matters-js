@@ -58,8 +58,6 @@ class AddressForm extends React.Component {
 
               </form>
         </div>
-
-
       </div>
     )
   }
