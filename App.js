@@ -84,10 +84,10 @@ class App extends React.Component {
     });
   }
 
-  // gets all bills from 2016
-  getBills(repName) {
+
+  getBills(repName, sessionYear=2015, year=2016) {
     $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/2015/search?term=votes.size:>0%20AND%20year:2016&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
+        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=votes.size:>0%20AND%20year:" + year + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
         method: "GET"
     })
     .done(function(response) {
