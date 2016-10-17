@@ -107,13 +107,16 @@ class App extends React.Component {
         };
       });
 
+
       var cleanBills = closerFloorVotes.map((bill, i) => {
         return {"title": bill.result.title,
                 "year": bill.result.year,
                 "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
                 "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
                 "repDecision": senatorVotes[i],
-                "summary": bill.result.summary
+                "summary": bill.result.summary,
+                "status": bill.result.status.statusDesc,
+                "date": bill.result.status.actionDate
         }
       });
 
@@ -154,7 +157,9 @@ class App extends React.Component {
               "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
               "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
               "repDecision": senatorVotes[i],
-              "summary": bill.result.summary
+              "summary": bill.result.summary,
+              "status": bill.result.status.statusDesc,
+              "date": bill.result.status.actionDate
       }
     });
 
@@ -183,7 +188,9 @@ class App extends React.Component {
               "summary": bill.result.summary,
               "repDecision": "N/A",
               "yay": yaysArray[i].size,
-              "nay": naysArray[i].size
+              "nay": naysArray[i].size,
+              "status": bill.result.status.statusDesc,
+              "date": bill.result.status.actionDate
       }
     });
 

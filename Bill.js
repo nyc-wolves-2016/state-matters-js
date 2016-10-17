@@ -54,7 +54,7 @@ class Bill extends React.Component {
 
 
   render() {
-    let {year, title, yay, nay, repDecision, summary} = this.props.data
+    let {year, title, yay, nay, repDecision, summary, status, date} = this.props.data
     let {supaKey, othaSupaKey} = this.props
     return(
       <li id={othaSupaKey}>
@@ -66,6 +66,8 @@ class Bill extends React.Component {
             <p>SUMMARY: {summary}</p>
             <p>YAY: {yay}</p>
             <p>NAY: {nay}</p>
+            <p>STATUS: {status}</p>
+            <p>ACTION DATE: {date}</p>
             <p><canvas ref="chart" className="voteChart" id={supaKey}></canvas></p>
           </div>
         </div>
