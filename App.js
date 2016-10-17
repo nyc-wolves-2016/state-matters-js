@@ -193,7 +193,7 @@ class App extends React.Component {
   showKeywordForm() {
       //   append form for keyword search to DOM and hide other filters
       $('#timeline-filterables').find('li').hide();
-      $('#timeline-filterables').append("<form class='keyword-search col-s4' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div className='keyword-search-box'><label htmlFor='t'>search for bills by keyword:</label><input ref='keywordBox' type='text'/></div><input type='submit' value='search'/></form>");
+      $('#timeline-filterables').append("<div class='row' id='keywordDiv' style={this.formStyle()}><form class='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div class='keyword-search-box input-field col s9'><label for='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div class='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>");
   }
 
   render() {
