@@ -19,12 +19,13 @@ class App extends React.Component {
       repInfo: {},
       bills: [
       ],
-      showLoading: false
+      showLoading: false,
+      showForm: true
     }
   }
 
   geocodeIt(fullAddress){
-    this.setState({showLoading: true})
+    this.setState({showLoading: true, showForm: false})
     $.ajax({
       url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
     })
@@ -128,7 +129,7 @@ class App extends React.Component {
       <div ref="test" id="fullpage">
         <div className="section">
           <div className="slide">
-            <AddressForm getAddress={this.geocodeIt}/>
+            <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
             {this.state.showLoading ?
               <Loading /> :
               null
