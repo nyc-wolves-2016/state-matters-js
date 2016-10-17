@@ -87,7 +87,7 @@ class App extends React.Component {
     })
     .done(function(response) {
       // bills w/ floor votes
-      this.setState({showLoading: false});
+      this.setState({showLoading: false, showForm: true});
     $.fn.fullpage.moveSlideRight();
 
 
