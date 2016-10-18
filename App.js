@@ -306,17 +306,6 @@ class App extends React.Component {
           </div>
           <div className="slide">
 
-            <div className="materialize" id="timeline-filterables">
-                {timelineFilters}
-            </div>
-              <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
-                <div className="keyword-search-box">
-                  <label htmlFor="t">search {this.state.billYear} bills by keyword:</label>
-                  <input ref="keywordBox" type="text"/>
-                </div>
-                <input type="submit" value="search"/>
-              </form>
-
               <select onChange={this.yearChange} value={this.state.year.billYear}>
                 <option value="2016">2016</option>
                 <option value="2015">2015</option>
@@ -328,8 +317,8 @@ class App extends React.Component {
                 <option value="2009">2009</option>
               </select>
 
-            <Timeline year={this.state.year} bills={this.state.currentBills} senatorInfo={this.state.senatorInfo}/>
-            
+            <Timeline bills={this.state.currentBills} year={this.state.year} senatorInfo={this.state.senatorInfo} timelineFilters={timelineFilters} />
+
           </div>
           <div className="fp-controlArrow fp-next"></div>
           <div className="fp-controlArrow fp-next"></div>
