@@ -37,7 +37,7 @@ h1 {
 
 .timeline ul {
   background: #456990;
-  padding: 50px 0;
+  padding: none;
 }
 
 .timeline ul li {

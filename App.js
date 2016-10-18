@@ -27,7 +27,8 @@ class App extends React.Component {
       currentBills: [],
       year: { billYear: '2016', sessionYear: '2015' },
       showLoading: false,
-      showForm: true
+      showForm: true,
+      showKeywordSearchForm: false
     }
   }
 
@@ -185,8 +186,6 @@ class App extends React.Component {
 
       var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
 
-      // var theYear = billYear.toString();
-
       this.setState({
         bills: cleanBills
       });
@@ -226,60 +225,49 @@ class App extends React.Component {
     var keywordSearchBills = this.state.bills.filter(bill => bill.summary.includes(searchTerm));
 
     this.setState({
-      currentBills: keywordSearchBills
+      currentBills: keywordSearchBills,
+      showKeywordSearchForm: false
     })
-    $('#timeline-filterables').find('li').show();
-    $('#timeline-filterables').find('form').remove();
   }
 
-    showKeywordForm() {
-       //   append form for keyword search to DOM and hide other filters
-       $('#timeline-filterables').find('li').hide();
-       $('#timeline-filterables').append("<div class='row' id='keywordDiv' style={this.formStyle()}><form class='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div class='keyword-search-box input-field col s9'><label for='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div class='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>");
-    }       
+   showKeywordForm() {
+        this.setState({showKeywordSearchForm: true})
+    }
 
   render() {
+      if (this.state.showKeywordSearchForm) {
+            var timelineFilters = <div className='row' id='keywordDiv'><form className='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div className='keyword-search-box input-field col s9'><label htmlFor='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div className='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>
+      } else {
+            var timelineFilters = <ul className="row">
+            <li className="col s4">
+            <a className="waves-effect waves-light btn" onClick={this.closeBillsClicked}>close vote bills</a>
+            </li>
+
+            <li className="col s4">
+            <a className="waves-effect waves-light btn" onClick={this.sponsoredClicked}>Sponsored bills</a>
+            </li>
+
+            <li className="col s4">
+            <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
+            </li>
+            </ul>
+      }
+
+
     return(
       <div ref="test" id="fullpage">
         <div className="section">
           <div className="slide">
             <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
-            {this.state.showLoading ?
-              <Loading /> :
-              null
-            }
+            { this.state.showLoading ? <Loading /> : null }
           </div>
           <div className="slide">
             <RepInfoDisplay repDisplay={this.state.senatorInfo}/>
 
 
             <div className="materialize" id="timeline-filterables">
-                <ul className="row">
-                  <li className="col s4">
-                  {/* <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button> */}
-                  <a className="waves-effect waves-light btn" onClick={this.closeBillsClicked}>close vote bills</a>
-                  </li>
-
-                  <li className="col s4">
-                  {/* <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button> */}
-                  <a className="waves-effect waves-light btn" onClick={this.sponsoredClicked}>Sponsored bills</a>
-                  </li>
-
-                  <li className="col s4">
-                  {/* <button className="filter-button" type="button" onClick={this.showKeywordForm}>Search by Keyword</button> */}
-                  <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
-                  </li>
-                </ul>
-
+                {timelineFilters}
             </div>
-
-              // <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
-              //   <div className="keyword-search-box">
-              //     <label htmlFor="t">search bills by keyword:</label>
-              //     <input ref="keywordBox" type="text"/>
-              //   </div>
-              //   <input type="submit" value="search"/>
-              // </form>
 
               <select onChange={this.yearChange} value={this.state.year.billYear}>
                 <option value="2009">2009</option>
