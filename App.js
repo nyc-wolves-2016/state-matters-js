@@ -237,6 +237,8 @@ class App extends React.Component {
         currentBills: cleanCloserVoteBills
       });
 
+      debugger;
+
     }.bind(this))
 
   }
