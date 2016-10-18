@@ -15,7 +15,7 @@ class App extends React.Component {
     super();
     this.geocodeIt = this.geocodeIt.bind(this);
     this.getBills = this.getBills.bind(this);
-    // this.getBillTotal = this.getBillTotal.bind(this);
+    this.getBillTotal = this.getBillTotal.bind(this);
     this.closeBillsClicked = this.closeBillsClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
@@ -72,9 +72,9 @@ class App extends React.Component {
       // retrieve later when non-default year is specified
 
 
-      // this.getBillTotal()
+      this.getBillTotal();
 
-      this.getBills()
+      // this.getBills()
 
     }.bind(this))
     .fail(function(response) {
@@ -116,7 +116,7 @@ class App extends React.Component {
 
     var district = this.state.senatorInfo.district;
     $.ajax({
-      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE'" + " AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
       method: "GET"
     })
     .done(function(response) {
@@ -132,7 +132,8 @@ class App extends React.Component {
         var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
         this.setState({ currentBills: cleanCloserVoteBills })
       }
-      else { this.getBills(); }
+      else { this.getBillTotal(); }
+      // else { this.getBills(); }
 
     }.bind(this))
   }
@@ -152,31 +153,32 @@ class App extends React.Component {
     this.senatorChange(chosenBillYear, chosenSessionYear)
   }
 
-  // getBillTotal() {
-  //   $.ajax({
-  //     url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
-  //     method: "GET"
-  //   })
-  //   .done(function(response) {
-  //     var billTotal = response.total;
-  //     this.getBills(1, billTotal)
-  //   }.bind(this))
-  // }
+  getBillTotal() {
+    $.ajax({
+      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+      method: "GET"
+    })
+    .done(function(response) {
+      var billTotal = response.total;
 
-  getBills(offset=1, billTotal=0) {
+      this.getBills(1, billTotal)
+
+    }.bind(this))
+  }
+
+  getBills(offset=1, billTotal=0, tempBillsArray=[]) {
 
     var billYear = parseInt(this.state.year.billYear);
     var sessionYear = parseInt(this.state.year.sessionYear);
 
     $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + this.state.offset + "&limit=1000&full=true",
+        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=1000&full=true",
         method: "GET"
     })
     .done(function(response) {
       // bills w/ floor votes
-      this.setState({showLoading: false, showForm: true});
 
-      $.fn.fullpage.moveSlideRight();
+
 
       var allBills = response.result.items;
 
@@ -213,8 +215,8 @@ class App extends React.Component {
 
       var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
-      var allYearsBills = this.state.bills;
-      allYearsBills[this.state.year.billYear] = cleanBills;
+      // var allYearsBills = this.state.bills;
+      // allYearsBills[this.state.year.billYear] = cleanBills;
 
       // if (allYearsBills[this.state.year.billYear]) {
       //   allYearsBills[this.state.year.billYear] = [...allYearsBills[this.state.year.billYear], cleanBills];
@@ -222,22 +224,28 @@ class App extends React.Component {
       //   allYearsBills[this.state.year.billYear] = cleanBills;
       // }
 
-      // if (billTotal > 1000) {
-      //   newBillTotal = billTotal - 1000;
-      //   newOffset = offset + 1000
-      //   getBills(newOffset, newBillTotal)
-      // }
 
-      this.setState({
-        bills: allYearsBills
-      });
+      if (billTotal > 1000) {
+        var totalBills = tempBillsArray.concat(cleanBills);
+        var newBillTotal = billTotal - 1000;
+        var newOffset = offset + 1000;
+        this.getBills(newOffset, newBillTotal, totalBills)
+      } else {
+        $.fn.fullpage.moveSlideRight();
+        this.setState({showLoading: false, showForm: true});
+        var totalBills = tempBillsArray.concat(cleanBills);
+        debugger;
+      }
+
+      // this.setState({
+      //   bills: allYearsBills
+      // });
 
 
-      this.setState({
-        currentBills: cleanCloserVoteBills
-      });
+      // this.setState({
+      //   currentBills: cleanCloserVoteBills
+      // });
 
-      debugger;
 
     }.bind(this))
 
