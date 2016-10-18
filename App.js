@@ -43,8 +43,8 @@ class App extends React.Component {
       var lat = response.results[0].geometry.location.lat
       var lng = response.results[0].geometry.location.lng
       this.getSenator(lat + '%2C%20' + lng )
-      this.getAssembly(lat + '%2C%20' + lng )
-      this.getCongress(lat + '%2C%20' + lng )
+      // this.getAssembly(lat + '%2C%20' + lng )
+      // this.getCongress(lat + '%2C%20' + lng )
     })
   }
 
@@ -81,31 +81,31 @@ class App extends React.Component {
     }.bind(this));
   }
 
-  getAssembly(latLng) {
-    $.ajax({
-      url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%2017nwTkaJDQ5AyfTtnX96SeBzRNZRekwKeonIZHvw%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListass&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery1710929156077118652_1476403682128&_=1476403735798",
-      method: 'get'
-    })
-    .done(function(response) {
-    }).fail(function(response) {
-      var foundRep = response.responseText;
-      foundRep = $.parseJSON(foundRep.slice(39, -2));
-      foundRep = foundRep.rows[0];
-    });
-  }
+  // getAssembly(latLng) {
+  //   $.ajax({
+  //     url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%2017nwTkaJDQ5AyfTtnX96SeBzRNZRekwKeonIZHvw%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListass&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery1710929156077118652_1476403682128&_=1476403735798",
+  //     method: 'get'
+  //   })
+  //   .done(function(response) {
+  //   }).fail(function(response) {
+  //     var foundRep = response.responseText;
+  //     foundRep = $.parseJSON(foundRep.slice(39, -2));
+  //     foundRep = foundRep.rows[0];
+  //   });
+  // }
 
-  getCongress(latLng) {
-    $.ajax({
-      url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201GFWTwdhLbQ8yprvFNe-XNkrm1Ik-vPFFynaxg3g%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListcon&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349225&_=1476457378114",
-      method: 'get'
-    })
-    .done(function(response) {
-    }).fail(function(response) {
-      var foundRep = response.responseText;
-      foundRep = $.parseJSON(foundRep.slice(39, -2));
-      foundRep = foundRep.rows[0];
-    });
-  }
+  // getCongress(latLng) {
+  //   $.ajax({
+  //     url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201GFWTwdhLbQ8yprvFNe-XNkrm1Ik-vPFFynaxg3g%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListcon&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349225&_=1476457378114",
+  //     method: 'get'
+  //   })
+  //   .done(function(response) {
+  //   }).fail(function(response) {
+  //     var foundRep = response.responseText;
+  //     foundRep = $.parseJSON(foundRep.slice(39, -2));
+  //     foundRep = foundRep.rows[0];
+  //   });
+  // }
 
   senatorChange(chosenBillYear, chosenSessionYear){
 
@@ -205,25 +205,14 @@ class App extends React.Component {
                 yay: yaysArray[i].size,
                 nay: naysArray[i].size,
                 senatorDecision: senatorVotes[i],
-                summary: bill.result.summary,
+                summary: bill.result.summary.slice(0, (bill.result.title.length * 2)),
                 status: bill.result.status.statusDesc,
                 date: bill.result.status.actionDate,
                 sponsor: billSponsors[i],
-                billId: bill.result.basePrintNoStr
+                session: bill.result.session,
+                billId: bill.result.printNo
         }
       });
-
-      // var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
-
-      // var allYearsBills = this.state.bills;
-      // allYearsBills[this.state.year.billYear] = cleanBills;
-
-      // if (allYearsBills[this.state.year.billYear]) {
-      //   allYearsBills[this.state.year.billYear] = [...allYearsBills[this.state.year.billYear], cleanBills];
-      // } else {
-      //   allYearsBills[this.state.year.billYear] = cleanBills;
-      // }
-
 
       if (billTotal > 1000) {
         var totalBills = tempBillsArray.concat(cleanBills);
