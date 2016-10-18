@@ -17,8 +17,37 @@
   color: #868c88;
 }
 
+#timeline-filterables, #timeline-filterables ul {
+  width: 100%;
+}
 
+#timeline-filterables * {
+  display: inline-block;
+}
 
-/*--------------------------------------------------------------*/
-/* year drop down menu
+#timeline-filterables ul {
+  text-align: center;
+}
 
+#keywordDiv {
+  width: 100%;
+}
+
+#keyword-search-form {
+  width: 80%;
+}
+
+#supaDupaButton {
+  margin-top: 30px;
+}
+/*
+#timeline-filterables {
+  position: absolute;
+  height: 63px;
+  width: 100%;
+}
+
+#rep-info {
+  position: absolute;
+  width: 100%;
+}*/
