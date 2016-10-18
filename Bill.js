@@ -12,6 +12,7 @@ class Bill extends React.Component {
   }
 
   componentDidMount() {
+    debugger;
     $.fn.fullpage.reBuild();
     $.fn.fullpage.setAutoScrolling(false);
     $.fn.fullpage.setFitToSection(false);
@@ -46,7 +47,10 @@ class Bill extends React.Component {
     });
   }
 
-  shouldComponentUpdate() {
+  componentDidUpdate() {
+    $("#chartArea").remove();
+    $(".hover-box").append("<p id='chartArea'><canvas ref='chart' className='voteChart' id={supaKey}></canvas></p>");
+
     let {year, title, yay, nay, repDecision, summary} = this.props.data
     Chart.defaults.global.defaultFontColor = "white";
 
@@ -93,7 +97,7 @@ class Bill extends React.Component {
             <p>NAY: {nay}</p>
             <p>STATUS: {status}</p>
             <p>ACTION DATE: {date}</p>
-            <p><canvas ref="chart" className="voteChart" id={supaKey}></canvas></p>
+            <p id="chartArea"><canvas ref="chart" className="voteChart" id={supaKey}></canvas></p>
           </div>
         </div>
       </li>

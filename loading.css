@@ -3,14 +3,26 @@
 }
 
 
-#loader {
-    position: absolute
-    left: 50%
-    top: 50%
-    margin: (-$loader-size/2) 0 0 (-$loader-size/2)
-    width: $loader-size - 2
-    height: $loader-size - 2
-    background-color: rgb(255, 255, 255)
-    border-radius: 50%
-    box-shadow: 0 0 0 $loader-size/6 rgb(20, 20, 20)
+#loading {
+
+  /*position loading <div> relative to the input form*/
+
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top-color: #ff6a00;
+  border-radius: 100%;
+  position: absolute;
+  left: -50%;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  animation: round 2s linear infinite;
+}
+
+
+@keyframes round{
+  from{transform: rotate(0deg)}
+  to{transform: rotate(360deg)}
 }
