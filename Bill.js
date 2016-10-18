@@ -48,22 +48,53 @@ class Bill extends React.Component {
     });
   }
 
-  shouldComponentUpdate() {
+  shouldComponentUpdate(newProps) {
     var othaOthaSupaKey = this.props.othaSupaKey + 1000;
     var canvasHolderId = "#"+othaOthaSupaKey;
     $("#"+othaOthaSupaKey).find('canvas').remove();
-    $("#"+othaOthaSupaKey).find('iframe').remove();
+    // $("#"+othaOthaSupaKey).find('iframe').remove();
 
     var freshCanvas = "<canvas ref='chart' id="+this.props.supaKey+"></canvas>";
     $(canvasHolderId).append(freshCanvas);
 
 
+    let {year, title, yay, nay, repDecision, summary} = newProps.data
+
+    Chart.defaults.global.defaultFontColor = "white";
+
+    var data = {
+      labels: [
+        "Yay",
+        "Nay"
+      ],
+      datasets: [
+        {
+          data: [yay, nay],
+          backgroundColor: [
+            "red",
+            "blue"
+          ],
+          hoverBackgroundColor: [
+            "#FF6384",
+            "#36A2EB"
+          ]
+        }
+      ]
+    };
+
+
+    debugger;
+    let pieChart = new Chart(this.refs.chart, {
+      type: "pie",
+      data: data
+    });
 
     return true;
   }
 
-  componentDidUpdate() {
+  componentWillReceiveProps(newProps) {
 
+    // debugger;
 
   }
 
