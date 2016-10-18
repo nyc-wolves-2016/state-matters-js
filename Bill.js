@@ -12,10 +12,10 @@ class Bill extends React.Component {
   }
 
   componentDidMount() {
-    debugger;
     $.fn.fullpage.reBuild();
     $.fn.fullpage.setAutoScrolling(false);
     $.fn.fullpage.setFitToSection(false);
+
     let {year, title, yay, nay, repDecision, summary} = this.props.data
     setupListeners();
 
@@ -47,9 +47,12 @@ class Bill extends React.Component {
     });
   }
 
-  componentDidUpdate() {
-    $("#chartArea").remove();
-    $(".hover-box").append("<p id='chartArea'><canvas ref='chart' className='voteChart' id={supaKey}></canvas></p>");
+  shouldComponentUpdate() {
+
+    var canvasHolderId = "#"+this.props.othaSupaKey;
+    $("canvas").hide();
+    var freshCanvas = "<canvas ref='chart' id="+this.props.supaKey+"></canvas>";
+    $(canvasHolderId).append(freshCanvas);
 
     let {year, title, yay, nay, repDecision, summary} = this.props.data
     Chart.defaults.global.defaultFontColor = "white";
@@ -78,15 +81,17 @@ class Bill extends React.Component {
       type: "pie",
       data: data
     });
+    return false;
   }
 
 
 
   render() {
+
     let {year, title, yay, nay, senatorDecision, summary, status, date} = this.props.data
     let {supaKey, othaSupaKey} = this.props
     return(
-      <li id={othaSupaKey}>
+      <li>
         <div className="big-box">
           <p>TITLE: {title}</p>
           <p>YOUR SENATORS DECISION: {senatorDecision}</p>
@@ -97,11 +102,10 @@ class Bill extends React.Component {
             <p>NAY: {nay}</p>
             <p>STATUS: {status}</p>
             <p>ACTION DATE: {date}</p>
-            <p id="chartArea"><canvas ref="chart" className="voteChart" id={supaKey}></canvas></p>
+            <p id={othaSupaKey} ref="holder"><canvas ref="chart" id={supaKey}></canvas></p>
           </div>
         </div>
       </li>
-
     )
   }
 }
