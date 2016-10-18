@@ -213,7 +213,7 @@ class App extends React.Component {
         }
       });
 
-      var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+      // var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
       // var allYearsBills = this.state.bills;
       // allYearsBills[this.state.year.billYear] = cleanBills;
@@ -230,22 +230,25 @@ class App extends React.Component {
         var newBillTotal = billTotal - 1000;
         var newOffset = offset + 1000;
         this.getBills(newOffset, newBillTotal, totalBills)
-      } else {
+      }
+      else {
         $.fn.fullpage.moveSlideRight();
         this.setState({showLoading: false, showForm: true});
         var totalBills = tempBillsArray.concat(cleanBills);
-        debugger;
+
+        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+
+        var billsStateVar = this.state.bills;
+        billsStateVar[this.state.year.billYear] = totalBills;
+
+        this.setState({
+          bills: billsStateVar
+        });
+
+        this.setState({
+          currentBills: closeVoteBills
+        })
       }
-
-      // this.setState({
-      //   bills: allYearsBills
-      // });
-
-
-      // this.setState({
-      //   currentBills: cleanCloserVoteBills
-      // });
-
 
     }.bind(this))
 
@@ -257,10 +260,10 @@ class App extends React.Component {
   }
 
   closeBillsClicked() {
-    var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+    var closeVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
     this.setState({
-      currentBills: cleanCloserVoteBills
+      currentBills: closeVoteBills
     })
   }
 
