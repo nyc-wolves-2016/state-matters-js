@@ -23,12 +23,13 @@ class Timeline extends React.Component {
 
     return(
       <div id="timelineboi">
+
         <section className="intro">
           <div className="container">
-            <h1>{year.billYear} BILLS &darr;</h1>
-
             <RepInfoDisplay repDisplay={this.props.senatorInfo} />
-            <h1 id="timeline-title">Vertical Timeline &darr;</h1>
+
+            <h1 id="timeline-title">{year.billYear} BILLS &darr;</h1>
+
             <div className="materialize" id="timeline-filterables">
                 {this.props.timelineFilters}
             </div>
