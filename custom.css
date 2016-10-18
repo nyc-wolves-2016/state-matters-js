@@ -42,9 +42,14 @@
 }
 
 #timeline-filterables {
-  margin-top: 100px;
+  padding-top: 60px;
 }
 
 #rep-info {
-  margin-bottom: 100px;
+  padding-top: 10px;
+  height: 60px;
+}
+
+#timeline-title {
+  padding-top: 50px;
 }
