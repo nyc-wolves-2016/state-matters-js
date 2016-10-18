@@ -16,3 +16,15 @@
 #rep-info span {
   color: #868c88;
 }
+
+#timeline-filterables, #timeline-filterables ul {
+  width: 100%;
+}
+
+#timeline-filterables * {
+  display: inline-block;
+}
+
+#timeline-filterables ul {
+  text-align: center;
+}
