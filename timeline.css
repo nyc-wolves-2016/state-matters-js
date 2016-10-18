@@ -17,7 +17,6 @@ body {
 
 .intro {
   background: #F45B69;
-  padding: 100px 0;
 }
 
 .container {
@@ -25,6 +24,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
+  height: 300px;
 }
 
 h1 {
@@ -37,7 +37,7 @@ h1 {
 
 .timeline ul {
   background: #456990;
-  padding: 50px 0;
+  padding: none;
 }
 
 .timeline ul li {

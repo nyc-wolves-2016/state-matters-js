@@ -40,14 +40,16 @@
 #supaDupaButton {
   margin-top: 30px;
 }
-/*
+
 #timeline-filterables {
-  position: absolute;
-  height: 63px;
-  width: 100%;
+  padding-top: 60px;
 }
 
 #rep-info {
-  position: absolute;
-  width: 100%;
-}*/
+  padding-top: 10px;
+  height: 60px;
+}
+
+#timeline-title {
+  padding-top: 50px;
+}

@@ -15,6 +15,7 @@ class App extends React.Component {
     super();
     this.geocodeIt = this.geocodeIt.bind(this);
     this.getBills = this.getBills.bind(this);
+    // this.getBillTotal = this.getBillTotal.bind(this);
     this.closeBillsClicked = this.closeBillsClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
@@ -23,11 +24,13 @@ class App extends React.Component {
     this.senatorChange = this.senatorChange.bind(this);
     this.state = {
       senatorInfo: {},
-      bills: [],
+      bills: {},
       currentBills: [],
       year: { billYear: '2016', sessionYear: '2015' },
+      offset: '1',
       showLoading: false,
-      showForm: true
+      showForm: true,
+      showKeywordSearchForm: false
     }
   }
 
@@ -67,7 +70,12 @@ class App extends React.Component {
       this.setState({senatorInfo: repObj});
       // save district to its own state
       // retrieve later when non-default year is specified
+
+
+      // this.getBillTotal()
+
       this.getBills()
+
     }.bind(this))
     .fail(function(response) {
     }.bind(this));
@@ -100,9 +108,11 @@ class App extends React.Component {
   }
 
   senatorChange(chosenBillYear, chosenSessionYear){
-    this.setState({
-      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear }
-    });
+
+    if (!this.state.bills[chosenBillYear]) {
+      $.fn.fullpage.moveSlideLeft();
+      this.setState({showLoading: true, showForm: false});
+    }
 
     var district = this.state.senatorInfo.district;
     $.ajax({
@@ -118,11 +128,17 @@ class App extends React.Component {
         senatorInfo: { fullName: senatorName, district: districtCode }
       })
 
-      this.getBills();
+      if (this.state.bills[this.state.year.billYear]) {
+        var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+        this.setState({ currentBills: cleanCloserVoteBills })
+      }
+      else { this.getBills(); }
+
     }.bind(this))
   }
 
   yearChange(event){
+
     var chosenYear = event.target.value;
     var chosenBillYear = parseInt(chosenYear);
 
@@ -136,12 +152,24 @@ class App extends React.Component {
     this.senatorChange(chosenBillYear, chosenSessionYear)
   }
 
-  getBills(billYear=2016, sessionYear=2015) {
+  // getBillTotal() {
+  //   $.ajax({
+  //     url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+  //     method: "GET"
+  //   })
+  //   .done(function(response) {
+  //     var billTotal = response.total;
+  //     this.getBills(1, billTotal)
+  //   }.bind(this))
+  // }
+
+  getBills(offset=1, billTotal=0) {
+
     var billYear = parseInt(this.state.year.billYear);
     var sessionYear = parseInt(this.state.year.sessionYear);
 
     $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
+        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + this.state.offset + "&limit=1000&full=true",
         method: "GET"
     })
     .done(function(response) {
@@ -183,13 +211,27 @@ class App extends React.Component {
         }
       });
 
-      var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+      var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
-      // var theYear = billYear.toString();
+      var allYearsBills = this.state.bills;
+      allYearsBills[this.state.year.billYear] = cleanBills;
+
+      // if (allYearsBills[this.state.year.billYear]) {
+      //   allYearsBills[this.state.year.billYear] = [...allYearsBills[this.state.year.billYear], cleanBills];
+      // } else {
+      //   allYearsBills[this.state.year.billYear] = cleanBills;
+      // }
+
+      // if (billTotal > 1000) {
+      //   newBillTotal = billTotal - 1000;
+      //   newOffset = offset + 1000
+      //   getBills(newOffset, newBillTotal)
+      // }
 
       this.setState({
-        bills: cleanBills
+        bills: allYearsBills
       });
+
 
       this.setState({
         currentBills: cleanCloserVoteBills
@@ -205,7 +247,7 @@ class App extends React.Component {
   }
 
   closeBillsClicked() {
-    var cleanCloserVoteBills = this.state.bills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+    var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
     this.setState({
       currentBills: cleanCloserVoteBills
@@ -213,7 +255,7 @@ class App extends React.Component {
   }
 
   sponsoredClicked() {
-    var senatorSponsoredBills = this.state.bills.filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
+    var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
 
     this.setState({
       currentBills: senatorSponsoredBills
@@ -223,76 +265,66 @@ class App extends React.Component {
   keywordSearch(event) {
     event.preventDefault();
     var searchTerm = this.refs.keywordBox.value;
-    var keywordSearchBills = this.state.bills.filter(bill => bill.summary.includes(searchTerm));
+    var keywordSearchBills = this.state.bills[this.state.year.billYear].filter(bill => bill.summary.includes(searchTerm));
 
     this.setState({
-      currentBills: keywordSearchBills
+      currentBills: keywordSearchBills,
+      showKeywordSearchForm: false
     })
-    $('#timeline-filterables').find('li').show();
-    $('#timeline-filterables').find('form').remove();
   }
 
-    showKeywordForm() {
-       //   append form for keyword search to DOM and hide other filters
-       $('#timeline-filterables').find('li').hide();
-       $('#timeline-filterables').append("<div class='row' id='keywordDiv' style={this.formStyle()}><form class='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div class='keyword-search-box input-field col s9'><label for='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div class='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>");
-    }       
+   showKeywordForm() {
+        this.setState({showKeywordSearchForm: true})
+    }
 
   render() {
+      if (this.state.showKeywordSearchForm) {
+            var timelineFilters = <div className='row' id='keywordDiv'><form className='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div className='keyword-search-box input-field col s9'><label htmlFor='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div className='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>
+      } else {
+            var timelineFilters =
+            <ul className="row">
+                <li className="col s3">
+                    <a className="waves-effect waves-light btn" onClick={this.closeBillsClicked}>close vote bills</a>
+                </li>
+
+                <li className="col s3">
+                    <a className="waves-effect waves-light btn" onClick={this.sponsoredClicked}>Sponsored bills</a>
+                </li>
+
+                <li className="col s3">
+                    <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
+                </li>
+
+                <li className="input-field col s3">
+                    <select onChange={this.yearChange} value={this.state.year.billYear}>
+                        <option value="Choose your option" disabled></option>
+                        <option value="2009">2009</option>
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                    </select>
+                    <label>Search by Year</label>
+                </li>
+            </ul>
+
+      }
+
+
     return(
       <div ref="test" id="fullpage">
         <div className="section">
           <div className="slide">
             <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
-            {this.state.showLoading ?
-              <Loading /> :
-              null
-            }
+            { this.state.showLoading ? <Loading /> : null }
           </div>
           <div className="slide">
-            <RepInfoDisplay repDisplay={this.state.senatorInfo}/>
 
+            <Timeline bills={this.state.currentBills} year={this.state.year} senatorInfo={this.state.senatorInfo} timelineFilters={timelineFilters} />
 
-            <div className="materialize" id="timeline-filterables">
-                <ul className="row">
-                  <li className="col s4">
-                  {/* <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button> */}
-                  <a className="waves-effect waves-light btn" onClick={this.closeBillsClicked}>close vote bills</a>
-                  </li>
-
-                  <li className="col s4">
-                  {/* <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button> */}
-                  <a className="waves-effect waves-light btn" onClick={this.sponsoredClicked}>Sponsored bills</a>
-                  </li>
-
-                  <li className="col s4">
-                  {/* <button className="filter-button" type="button" onClick={this.showKeywordForm}>Search by Keyword</button> */}
-                  <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
-                  </li>
-                </ul>
-
-            </div>
-
-              // <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
-              //   <div className="keyword-search-box">
-              //     <label htmlFor="t">search bills by keyword:</label>
-              //     <input ref="keywordBox" type="text"/>
-              //   </div>
-              //   <input type="submit" value="search"/>
-              // </form>
-
-              <select onChange={this.yearChange} value={this.state.year.billYear}>
-                <option value="2009">2009</option>
-                <option value="2010">2010</option>
-                <option value="2011">2011</option>
-                <option value="2012">2012</option>
-                <option value="2013">2013</option>
-                <option value="2014">2014</option>
-                <option value="2015">2015</option>
-                <option value="2016">2016</option>
-              </select>
-
-            <Timeline bills={this.state.currentBills}/>
           </div>
           <div className="fp-controlArrow fp-next"></div>
           <div className="fp-controlArrow fp-next"></div>
