@@ -17,10 +17,6 @@
   color: #868c88;
 }
 
-#timeline-filterables {
-  height: 80%;
-}
-
 #timeline-filterables, #timeline-filterables ul {
   width: 100%;
 }
@@ -43,4 +39,15 @@
 
 #supaDupaButton {
   margin-top: 30px;
+}
+
+#timeline-filterables {
+  position: absolute;
+  height: 63px;
+  width: 100%;
+}
+
+#rep-info {
+  position: absolute;
+  width: 100%;
 }
