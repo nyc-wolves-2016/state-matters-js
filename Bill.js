@@ -16,6 +16,7 @@ class Bill extends React.Component {
     $.fn.fullpage.setAutoScrolling(false);
     $.fn.fullpage.setFitToSection(false);
 
+
     let {year, title, yay, nay, repDecision, summary} = this.props.data
     setupListeners();
 
@@ -48,41 +49,59 @@ class Bill extends React.Component {
   }
 
   shouldComponentUpdate() {
+    var othaOthaSupaKey = this.props.othaSupaKey + 1000;
+    var canvasHolderId = "#"+othaOthaSupaKey;
+    $("#"+othaOthaSupaKey).find('canvas').remove();
+    $("#"+othaOthaSupaKey).find('iframe').remove();
 
-    var canvasHolderId = "#"+this.props.othaSupaKey;
-    $("canvas").hide();
     var freshCanvas = "<canvas ref='chart' id="+this.props.supaKey+"></canvas>";
     $(canvasHolderId).append(freshCanvas);
 
-    let {year, title, yay, nay, repDecision, summary} = this.props.data
-    Chart.defaults.global.defaultFontColor = "white";
 
-    var data = {
-      labels: [
-        "Yay",
-        "Nay"
-      ],
-      datasets: [
-        {
-          data: [yay, nay],
-          backgroundColor: [
-            "red",
-            "blue"
-          ],
-          hoverBackgroundColor: [
-            "#FF6384",
-            "#36A2EB"
-          ]
-        }
-      ]
-    };
 
-    let pieChart = new Chart(this.refs.chart, {
-      type: "pie",
-      data: data
-    });
-    return false;
+    return true;
   }
+
+  componentDidUpdate() {
+
+
+  }
+
+  //
+  // componentWillUpdate() {
+  //   $.fn.fullpage.reBuild();
+  //
+  //
+  //
+  //   let {year, title, yay, nay, repDecision, summary} = this.props.data
+  //   Chart.defaults.global.defaultFontColor = "white";
+  //
+  //   var data = {
+  //     labels: [
+  //       "Yay",
+  //       "Nay"
+  //     ],
+  //     datasets: [
+  //       {
+  //         data: [yay, nay],
+  //         backgroundColor: [
+  //           "red",
+  //           "blue"
+  //         ],
+  //         hoverBackgroundColor: [
+  //           "#FF6384",
+  //           "#36A2EB"
+  //         ]
+  //       }
+  //     ]
+  //   };
+  //
+  //   let pieChart = new Chart(this.refs.chart, {
+  //     type: "pie",
+  //     data: data
+  //   });
+  //   return false;
+  // }
 
 
 
@@ -90,8 +109,9 @@ class Bill extends React.Component {
 
     let {year, title, yay, nay, senatorDecision, summary, status, date} = this.props.data
     let {supaKey, othaSupaKey} = this.props
+    let othaOthaSupaKey = this.props.othaSupaKey + 1000
     return(
-      <li>
+      <li id={othaSupaKey}>
         <div className="big-box">
           <p>TITLE: {title}</p>
           <p>YOUR SENATORS DECISION: {senatorDecision}</p>
@@ -102,7 +122,7 @@ class Bill extends React.Component {
             <p>NAY: {nay}</p>
             <p>STATUS: {status}</p>
             <p>ACTION DATE: {date}</p>
-            <p id={othaSupaKey} ref="holder"><canvas ref="chart" id={supaKey}></canvas></p>
+            <p id={othaOthaSupaKey} ref="holder"><canvas ref="chart" id={supaKey}></canvas></p>
           </div>
         </div>
       </li>
