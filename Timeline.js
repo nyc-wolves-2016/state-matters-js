@@ -17,7 +17,6 @@ class Timeline extends React.Component {
 
   componentDidUpdate() {
 
-
   }
 
   render() {

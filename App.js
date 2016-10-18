@@ -19,9 +19,8 @@ class App extends React.Component {
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
     this.state = {
-      repInfo: {},
-      bills: [
-      ],
+      senatorInfo: {},
+      bills: [],
       currentBills: [],
       showLoading: false,
       showForm: true
@@ -51,8 +50,20 @@ class App extends React.Component {
       var foundRep = response;
       foundRep = $.parseJSON(foundRep.slice(41, -2));
       foundRep = foundRep.rows[0];
-      this.setState({repInfo: foundRep});
-      this.getBills(foundRep[1])
+      var senatorFirstLast = foundRep[1].split(" ");
+      var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+      var repObj = {
+        district: foundRep[0],
+        fullName: foundRep[1],
+        firstLast: senatorFirstLast,
+        web: foundRep[2],
+        population: foundRep[3]
+      }
+      foundRep.push(senatorFirstLast);
+      this.setState({senatorInfo: repObj});
+      // save district to its own state
+      // retrieve later when non-default year is specified
+      this.getBills()
     }.bind(this))
     .fail(function(response) {
     }.bind(this));
@@ -84,10 +95,10 @@ class App extends React.Component {
     });
   }
 
-  // gets all bills from 2016
-  getBills(repName) {
+
+  getBills(sessionYear=2015, billYear=2016) {
     $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/2015/search?term=votes.size:>0%20AND%20year:2016&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
+        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
         method: "GET"
     })
     .done(function(response) {
@@ -96,40 +107,50 @@ class App extends React.Component {
 
       $.fn.fullpage.moveSlideRight();
 
-      var floorVotes = response.result.items.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
-      var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
-      var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
+      var allBills = response.result.items;
 
-      var senatorVotes = closerFloorVotes.map(bill => {
-        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === repName).length > 0) {
-          return "yay"
-        } else {
-          return "nay"
-        };
-      });
+      var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+      var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
 
+      var yays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE);
+      var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
 
-      var cleanBills = closerFloorVotes.map((bill, i) => {
-        return {"title": bill.result.title,
-                "year": bill.result.year,
-                "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
-                "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
-                "repDecision": senatorVotes[i],
-                "summary": bill.result.summary,
-                "status": bill.result.status.statusDesc,
-                "date": bill.result.status.actionDate
+      var senatorVotes = allBills.map(bill => {
+        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
+        else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
+        else { return "n/a" }
+      })
+
+      var billSponsors = allBills.map(bill => {
+        if (bill.result.sponsor.member !== null) { return bill.result.sponsor.member.fullName }
+        else { return "n/a" }
+      })
+
+      var cleanBills = allBills.map((bill, i) => {
+        return {title: bill.result.title,
+                year: bill.result.year,
+                yay: yaysArray[i].size,
+                nay: naysArray[i].size,
+                senatorDecision: senatorVotes[i],
+                summary: bill.result.summary,
+                status: bill.result.status.statusDesc,
+                date: bill.result.status.actionDate,
+                sponsor: billSponsors[i],
+                billId: bill.result.basePrintNoStr
         }
       });
 
-      var allBills = response.result.items
+      var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+
+      // var theYear = billYear.toString();
 
       this.setState({
-        bills: allBills
-      })
+        bills: cleanBills
+      });
 
       this.setState({
-        currentBills: cleanBills
-      })
+        currentBills: cleanCloserVoteBills
+      });
 
     }.bind(this))
   }
@@ -140,71 +161,28 @@ class App extends React.Component {
   }
 
   yearClicked() {
-    var floorVotes = this.state.bills.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
-    var closeFloorVotes = floorVotes.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
-    var closerFloorVotes = closeFloorVotes.filter(bill => Math.abs((bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size) - (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size)) < 20 )
-
-    var senatorVotes = closerFloorVotes.map(bill => {
-      if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.repInfo[1]).length > 0) {
-        return "yay"
-      } else {
-        return "nay"
-      };
-    });
-
-    var cleanBills = closerFloorVotes.map((bill, i) => {
-      return {"title": bill.result.title,
-              "year": bill.result.year,
-              "yay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.size,
-              "nay": bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.size,
-              "repDecision": senatorVotes[i],
-              "summary": bill.result.summary,
-              "status": bill.result.status.statusDesc,
-              "date": bill.result.status.actionDate
-      }
-    });
+    var cleanCloserVoteBills = this.state.bills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
     this.setState({
-      currentBills: cleanBills
+      currentBills: cleanCloserVoteBills
     })
   }
 
   sponsoredClicked() {
-    var repShortName = this.state.repInfo[1].split(" ")
-    repShortName = repShortName[0] + " " + repShortName[2]
-    var floorVoteBills = this.state.bills.filter(bill => bill.result.votes.items[bill.result.votes.items.length-1].voteType === "FLOOR");
-    var allSponsoredBills = floorVoteBills.filter(bill => bill.result.sponsor.member !== null);
-    var repSponsoredBills = allSponsoredBills.filter(bill => bill.result.sponsor.member.fullName === repShortName);
-
-    var nays = repSponsoredBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY)
-    var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } } )
-
-    var yays = repSponsoredBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE)
-    var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } } )
-
-    var cleanRepSponsoredBills = repSponsoredBills.map((bill, i) => {
-      return {"title": bill.result.title,
-              "year": bill.result.year,
-              "summary": bill.result.summary,
-              "repDecision": "N/A",
-              "yay": yaysArray[i].size,
-              "nay": naysArray[i].size,
-              "status": bill.result.status.statusDesc,
-              "date": bill.result.status.actionDate
-      }
-    });
+    var senatorSponsoredBills = this.state.bills.filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
 
     this.setState({
-      currentBills: cleanRepSponsoredBills
+      currentBills: senatorSponsoredBills
     })
   }
 
   keywordSearch(event) {
     event.preventDefault();
     var searchTerm = this.refs.keywordBox.value;
-    var relevantBills = this.state.bills.filter(bill => bill.result.summary.includes(searchTerm));
-    var cleanRelevantBills = relevantBills.map(bill => {
+    var keywordSearchBills = this.state.bills.filter(bill => bill.summary.includes(searchTerm));
 
+    this.setState({
+      currentBills: keywordSearchBills
     })
   }
 
@@ -220,12 +198,12 @@ class App extends React.Component {
             }
           </div>
           <div className="slide">
-            <RepInfoDisplay repDisplay={this.state.repInfo}/>
+            <RepInfoDisplay repDisplay={this.state.senatorInfo}/>
               <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button>
               <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button>
               <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
                 <div className="keyword-search-box">
-                  <label htmlFor="t">search for bills by keyword:</label>
+                  <label htmlFor="t">search bills by keyword:</label>
                   <input ref="keywordBox" type="text"/>
                 </div>
                 <input type="submit" value="search"/>
