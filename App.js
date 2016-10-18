@@ -23,7 +23,7 @@ class App extends React.Component {
     this.senatorChange = this.senatorChange.bind(this);
     this.state = {
       senatorInfo: {},
-      bills: [],
+      bills: {},
       currentBills: [],
       year: { billYear: '2016', sessionYear: '2015' },
       showLoading: false,
@@ -119,7 +119,12 @@ class App extends React.Component {
         senatorInfo: { fullName: senatorName, district: districtCode }
       })
 
-      this.getBills();
+      if (this.state.bills[this.state.year.billYear]) {
+        var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+        this.setState({ currentBills: cleanCloserVoteBills })
+      }
+      else { this.getBills(); }
+
     }.bind(this))
   }
 
@@ -138,6 +143,7 @@ class App extends React.Component {
   }
 
   getBills(billYear=2016, sessionYear=2015) {
+
     var billYear = parseInt(this.state.year.billYear);
     var sessionYear = parseInt(this.state.year.sessionYear);
 
@@ -149,6 +155,9 @@ class App extends React.Component {
       // bills w/ floor votes
       this.setState({showLoading: false, showForm: true});
 
+      // if (this.state.bills.bills(this.state.year.billYear).length === 0) {
+
+      // }
       $.fn.fullpage.moveSlideRight();
 
       var allBills = response.result.items;
@@ -184,10 +193,13 @@ class App extends React.Component {
         }
       });
 
-      var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+      var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+
+      var allYearsBills = this.state.bills
+      allYearsBills[this.state.year.billYear] = cleanBills
 
       this.setState({
-        bills: cleanBills
+        bills: allYearsBills
       });
 
       this.setState({
@@ -204,7 +216,7 @@ class App extends React.Component {
   }
 
   closeBillsClicked() {
-    var cleanCloserVoteBills = this.state.bills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+    var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
     this.setState({
       currentBills: cleanCloserVoteBills
@@ -212,7 +224,7 @@ class App extends React.Component {
   }
 
   sponsoredClicked() {
-    var senatorSponsoredBills = this.state.bills.filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
+    var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
 
     this.setState({
       currentBills: senatorSponsoredBills
