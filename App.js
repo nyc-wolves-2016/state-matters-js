@@ -186,8 +186,6 @@ class App extends React.Component {
 
       var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
 
-      // var theYear = billYear.toString();
-
       this.setState({
         bills: cleanBills
       });
@@ -230,20 +228,10 @@ class App extends React.Component {
       currentBills: keywordSearchBills,
       showKeywordSearchForm: false
     })
-
-    // these react components should just appear or not based on showKeywordForm
-    // $('#timeline-filterables').find('li').show();
-    // $('#timeline-filterables').find('form').remove();
   }
 
    showKeywordForm() {
-        // change state to have showKeywordFormDisplay = true
-        debugger;
         this.setState({showKeywordSearchForm: true})
-       //   append form for keyword search to DOM and hide other filters
-       // reactify this
-    //    $('#timeline-filterables').find('li').hide();
-    //    $('#timeline-filterables').append("<div class='row' id='keywordDiv' style={this.formStyle()}><form class='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div class='keyword-search-box input-field col s9'><label for='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div class='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>");
     }
 
   render() {
