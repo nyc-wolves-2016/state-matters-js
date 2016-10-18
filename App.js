@@ -281,31 +281,34 @@ class App extends React.Component {
       if (this.state.showKeywordSearchForm) {
             var timelineFilters = <div className='row' id='keywordDiv'><form className='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div className='keyword-search-box input-field col s9'><label htmlFor='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div className='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>
       } else {
-            var timelineFilters = <ul className="row">
-            <li className="col s3">
-            <a className="waves-effect waves-light btn" onClick={this.closeBillsClicked}>close vote bills</a>
-            </li>
+            var timelineFilters =
+            <ul className="row">
+                <li className="col s3">
+                    <a className="waves-effect waves-light btn" onClick={this.closeBillsClicked}>close vote bills</a>
+                </li>
 
-            <li className="col s3">
-            <a className="waves-effect waves-light btn" onClick={this.sponsoredClicked}>Sponsored bills</a>
-            </li>
+                <li className="col s3">
+                    <a className="waves-effect waves-light btn" onClick={this.sponsoredClicked}>Sponsored bills</a>
+                </li>
 
-            <li className="col s3">
-            <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
-            </li>
+                <li className="col s3">
+                    <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
+                </li>
 
-            <li className="col s3">
-            <select onChange={this.yearChange} value={this.state.year.billYear}>
-            <option value="2009">2009</option>
-            <option value="2010">2010</option>
-            <option value="2011">2011</option>
-            <option value="2012">2012</option>
-            <option value="2013">2013</option>
-            <option value="2014">2014</option>
-            <option value="2015">2015</option>
-            <option value="2016">2016</option>
-            </select>
-            </li>
+                <li className="input-field col s3">
+                    <select onChange={this.yearChange} value={this.state.year.billYear}>
+                        <option value="Choose your option" disabled></option>
+                        <option value="2009">2009</option>
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                    </select>
+                    <label>Search by Year</label>
+                </li>
             </ul>
 
       }
