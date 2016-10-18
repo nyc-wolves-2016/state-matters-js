@@ -15,13 +15,16 @@ class App extends React.Component {
     super();
     this.geocodeIt = this.geocodeIt.bind(this);
     this.getBills = this.getBills.bind(this);
-    this.yearClicked = this.yearClicked.bind(this);
+    this.closeBillsClicked = this.closeBillsClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
+    this.yearChange = this.yearChange.bind(this);
+    this.senatorChange = this.senatorChange.bind(this);
     this.state = {
       senatorInfo: {},
       bills: [],
       currentBills: [],
+      year: { billYear: '2016', sessionYear: '2015' },
       showLoading: false,
       showForm: true
     }
@@ -95,8 +98,47 @@ class App extends React.Component {
     });
   }
 
+  senatorChange(chosenBillYear, chosenSessionYear){
+    this.setState({
+      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear }
+    });
 
-  getBills(sessionYear=2015, billYear=2016) {
+    var district = this.state.senatorInfo.district;
+    $.ajax({
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE'" + " AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
+      method: "GET"
+    })
+    .done(function(response) {
+
+      var senatorName = response.result.items[0].fullName;
+      var districtCode = response.result.items[0].districtCode;
+
+      this.setState({
+        senatorInfo: { fullName: senatorName, district: districtCode }
+      })
+
+      this.getBills();
+    }.bind(this))
+  }
+
+  yearChange(event){
+    var chosenYear = event.target.value;
+    var chosenBillYear = parseInt(chosenYear);
+
+    if (chosenBillYear % 2 === 0) { var chosenSessionYear = chosenBillYear - 1 }
+    else { var chosenSessionYear = chosenBillYear }
+
+    this.setState({
+      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear }
+    });
+
+    this.senatorChange(chosenBillYear, chosenSessionYear)
+  }
+
+  getBills(billYear=2016, sessionYear=2015) {
+    var billYear = parseInt(this.state.year.billYear);
+    var sessionYear = parseInt(this.state.year.sessionYear);
+
     $.ajax({
         url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
         method: "GET"
@@ -160,7 +202,7 @@ class App extends React.Component {
     $('#fullpage').fullpage({scrollOverflow: true})
   }
 
-  yearClicked() {
+  closeBillsClicked() {
     var cleanCloserVoteBills = this.state.bills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
     this.setState({
@@ -199,8 +241,10 @@ class App extends React.Component {
           </div>
           <div className="slide">
             <RepInfoDisplay repDisplay={this.state.senatorInfo}/>
-              <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button>
-              <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button>
+              <button className="filter-button" type="button" onClick={this.closeBillsClicked}>close vote bills</button>
+
+              <button className="filter-button" type="button" onClick={this.sponsoredClicked}>{this.state.senatorInfo.fullName} sponsored bills</button>
+
               <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
                 <div className="keyword-search-box">
                   <label htmlFor="t">search bills by keyword:</label>
@@ -208,6 +252,18 @@ class App extends React.Component {
                 </div>
                 <input type="submit" value="search"/>
               </form>
+
+              <select onChange={this.yearChange} value={this.state.year.billYear}>
+                <option value="2009">2009</option>
+                <option value="2010">2010</option>
+                <option value="2011">2011</option>
+                <option value="2012">2012</option>
+                <option value="2013">2013</option>
+                <option value="2014">2014</option>
+                <option value="2015">2015</option>
+                <option value="2016">2016</option>
+              </select>
+
             <Timeline bills={this.state.currentBills}/>
           </div>
           <div className="fp-controlArrow fp-next"></div>
