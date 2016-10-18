@@ -101,9 +101,11 @@ class App extends React.Component {
   }
 
   senatorChange(chosenBillYear, chosenSessionYear){
-    this.setState({
-      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear }
-    });
+
+    if (!this.state.bills[chosenBillYear]) {
+      $.fn.fullpage.moveSlideLeft();
+      this.setState({showLoading: true, showForm: false});
+    }
 
     var district = this.state.senatorInfo.district;
     $.ajax({
@@ -129,6 +131,7 @@ class App extends React.Component {
   }
 
   yearChange(event){
+
     var chosenYear = event.target.value;
     var chosenBillYear = parseInt(chosenYear);
 
@@ -155,9 +158,6 @@ class App extends React.Component {
       // bills w/ floor votes
       this.setState({showLoading: false, showForm: true});
 
-      // if (this.state.bills.bills(this.state.year.billYear).length === 0) {
-
-      // }
       $.fn.fullpage.moveSlideRight();
 
       var allBills = response.result.items;
@@ -234,7 +234,7 @@ class App extends React.Component {
   keywordSearch(event) {
     event.preventDefault();
     var searchTerm = this.refs.keywordBox.value;
-    var keywordSearchBills = this.state.bills.filter(bill => bill.summary.includes(searchTerm));
+    var keywordSearchBills = this.state.bills[this.state.year.billYear].filter(bill => bill.summary.includes(searchTerm));
 
     this.setState({
       currentBills: keywordSearchBills,
@@ -276,23 +276,29 @@ class App extends React.Component {
           <div className="slide">
             <RepInfoDisplay repDisplay={this.state.senatorInfo}/>
 
-
             <div className="materialize" id="timeline-filterables">
                 {timelineFilters}
             </div>
+              <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
+                <div className="keyword-search-box">
+                  <label htmlFor="t">search {this.state.billYear} bills by keyword:</label>
+                  <input ref="keywordBox" type="text"/>
+                </div>
+                <input type="submit" value="search"/>
+              </form>
 
               <select onChange={this.yearChange} value={this.state.year.billYear}>
-                <option value="2009">2009</option>
-                <option value="2010">2010</option>
-                <option value="2011">2011</option>
-                <option value="2012">2012</option>
-                <option value="2013">2013</option>
-                <option value="2014">2014</option>
-                <option value="2015">2015</option>
                 <option value="2016">2016</option>
+                <option value="2015">2015</option>
+                <option value="2014">2014</option>
+                <option value="2013">2013</option>
+                <option value="2012">2012</option>
+                <option value="2011">2011</option>
+                <option value="2010">2010</option>
+                <option value="2009">2009</option>
               </select>
 
-            <Timeline bills={this.state.currentBills}/>
+            <Timeline year={this.state.year} bills={this.state.currentBills}/>
           </div>
           <div className="fp-controlArrow fp-next"></div>
           <div className="fp-controlArrow fp-next"></div>

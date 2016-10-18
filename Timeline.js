@@ -20,12 +20,13 @@ class Timeline extends React.Component {
   }
 
   render() {
-    let {bills} = this.props
+    let {bills, year} = this.props
+
     return(
       <div id="timelineboi">
         <section className="intro">
           <div className="container">
-            <h1>Vertical Timeline &darr;</h1>
+            <h1>{year.billYear} BILLS &darr;</h1>
           </div>
         </section>
 
