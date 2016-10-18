@@ -15,6 +15,7 @@ class App extends React.Component {
     super();
     this.geocodeIt = this.geocodeIt.bind(this);
     this.getBills = this.getBills.bind(this);
+    this.getBillTotal = this.getBillTotal.bind(this);
     this.closeBillsClicked = this.closeBillsClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
@@ -26,6 +27,7 @@ class App extends React.Component {
       bills: {},
       currentBills: [],
       year: { billYear: '2016', sessionYear: '2015' },
+      offset: '1',
       showLoading: false,
       showForm: true,
       showKeywordSearchForm: false
@@ -68,7 +70,7 @@ class App extends React.Component {
       this.setState({senatorInfo: repObj});
       // save district to its own state
       // retrieve later when non-default year is specified
-      this.getBills()
+      this.getBillTotal()
     }.bind(this))
     .fail(function(response) {
     }.bind(this));
@@ -145,13 +147,24 @@ class App extends React.Component {
     this.senatorChange(chosenBillYear, chosenSessionYear)
   }
 
-  getBills(billYear=2016, sessionYear=2015) {
+  getBillTotal() {
+    $.ajax({
+      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+      method: "GET"
+    })
+    .done(function(response) {
+      var billTotal = response.total;
+      this.getBills(1, billTotal)
+    }.bind(this))
+  }
+
+  getBills(offset=1, billTotal) {
 
     var billYear = parseInt(this.state.year.billYear);
     var sessionYear = parseInt(this.state.year.sessionYear);
 
     $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
+        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + this.state.offset + "&limit=1000&full=true",
         method: "GET"
     })
     .done(function(response) {
@@ -195,12 +208,24 @@ class App extends React.Component {
 
       var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
-      var allYearsBills = this.state.bills
-      allYearsBills[this.state.year.billYear] = cleanBills
+      var allYearsBills = this.state.bills;
+      debugger;
+      if (allYearsBills[this.state.year.billYear]) {
+        debugger;
+        allYearsBills[this.state.year.billYear] = [...allYearsBills[this.state.year.billYear], cleanBills];
+      } else {
+        allYearsBills[this.state.year.billYear] = cleanBills;
+      }
 
       this.setState({
         bills: allYearsBills
       });
+      if (billTotal > 1000) {
+        newBillTotal = billTotal - 1000;
+        newOffset = offset + 1000
+        getBills(newOffset, newBillTotal)
+      }
+
 
       this.setState({
         currentBills: cleanCloserVoteBills
