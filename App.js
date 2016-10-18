@@ -305,7 +305,6 @@ class App extends React.Component {
             { this.state.showLoading ? <Loading /> : null }
           </div>
           <div className="slide">
-            <RepInfoDisplay repDisplay={this.state.senatorInfo}/>
 
             <div className="materialize" id="timeline-filterables">
                 {timelineFilters}
@@ -329,7 +328,8 @@ class App extends React.Component {
                 <option value="2009">2009</option>
               </select>
 
-            <Timeline year={this.state.year} bills={this.state.currentBills}/>
+            <Timeline year={this.state.year} bills={this.state.currentBills} senatorInfo={this.state.senatorInfo}/>
+            
           </div>
           <div className="fp-controlArrow fp-next"></div>
           <div className="fp-controlArrow fp-next"></div>

@@ -5,8 +5,7 @@ import jquery from 'jquery';
 import IScroll from 'fullpage.js';
 import fullpage from 'fullpage.js';
 import setupListeners from './timeline_fcns';
-
-
+import RepInfoDisplay from './RepInfoDisplay';
 
 class Timeline extends React.Component {
 
@@ -27,6 +26,8 @@ class Timeline extends React.Component {
         <section className="intro">
           <div className="container">
             <h1>{year.billYear} BILLS &darr;</h1>
+
+            <RepInfoDisplay repDisplay={this.props.senatorInfo} />
           </div>
         </section>
 
