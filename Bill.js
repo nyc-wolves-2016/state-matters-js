@@ -11,35 +11,33 @@ class Bill extends React.Component {
     super();
   }
 
-
   componentDidMount() {
     $.fn.fullpage.reBuild();
     $.fn.fullpage.setAutoScrolling(false);
     $.fn.fullpage.setFitToSection(false);
     let {year, title, yay, nay, repDecision, summary} = this.props.data
-
     setupListeners();
 
     Chart.defaults.global.defaultFontColor = "white";
 
     var data = {
       labels: [
-          "Yay",
-          "Nay"
+        "Yay",
+        "Nay"
       ],
       datasets: [
-          {
-              data: [yay, nay],
-              backgroundColor: [
-                  "red",
-                  "blue"
-              ],
-              hoverBackgroundColor: [
-                  "#FF6384",
-                  "#36A2EB"
-              ]
-          }
-        ]
+        {
+          data: [yay, nay],
+          backgroundColor: [
+            "red",
+            "blue"
+          ],
+          hoverBackgroundColor: [
+            "#FF6384",
+            "#36A2EB"
+          ]
+        }
+      ]
     };
 
     let pieChart = new Chart(this.refs.chart, {
@@ -48,9 +46,36 @@ class Bill extends React.Component {
     });
   }
 
-  componentDidUpdate() {
+  shouldComponentUpdate() {
+    let {year, title, yay, nay, repDecision, summary} = this.props.data
+    Chart.defaults.global.defaultFontColor = "white";
 
+    var data = {
+      labels: [
+        "Yay",
+        "Nay"
+      ],
+      datasets: [
+        {
+          data: [yay, nay],
+          backgroundColor: [
+            "red",
+            "blue"
+          ],
+          hoverBackgroundColor: [
+            "#FF6384",
+            "#36A2EB"
+          ]
+        }
+      ]
+    };
+
+    let pieChart = new Chart(this.refs.chart, {
+      type: "pie",
+      data: data
+    });
   }
+
 
 
   render() {
