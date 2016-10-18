@@ -19,11 +19,12 @@ class App extends React.Component {
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
     this.yearChange = this.yearChange.bind(this);
+    this.senatorChange = this.senatorChange.bind(this);
     this.state = {
       senatorInfo: {},
       bills: [],
       currentBills: [],
-      year: '2016',
+      year: { billYear: '2016', sessionYear: '2015' },
       showLoading: false,
       showForm: true
     }
@@ -97,24 +98,47 @@ class App extends React.Component {
     });
   }
 
-  senatorChange(){
-    var district = this.state.senatorInfo.district;
+  senatorChange(chosenBillYear, chosenSessionYear){
+    this.setState({
+      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear }
+    });
 
+    var district = this.state.senatorInfo.district;
+    $.ajax({
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE'" + " AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
+      method: "GET"
+    })
+    .done(function(response) {
+
+      var senatorName = response.result.items[0].fullName;
+      var districtCode = response.result.items[0].districtCode;
+
+      this.setState({
+        senatorInfo: { fullName: senatorName, district: districtCode }
+      })
+
+      this.getBills();
+    }.bind(this))
   }
 
   yearChange(event){
     var chosenYear = event.target.value;
+    var chosenBillYear = parseInt(chosenYear);
+
+    if (chosenBillYear % 2 === 0) { var chosenSessionYear = chosenBillYear - 1 }
+    else { var chosenSessionYear = chosenBillYear }
+
     this.setState({
-      year: chosenYear
+      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear }
     });
 
-    this.getBills(chosenYear)
+    this.senatorChange(chosenBillYear, chosenSessionYear)
   }
 
-  getBills(billYear=2016) {
-    var billYear = parseInt(billYear);
-    if (billYear % 2 === 0) { var sessionYear = billYear - 1 }
-    else { var sessionYear = billYear }
+  getBills(billYear=2016, sessionYear=2015) {
+    var billYear = parseInt(this.state.year.billYear);
+    var sessionYear = parseInt(this.state.year.sessionYear);
+
     $.ajax({
         url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=1&limit=1000&full=true",
         method: "GET"
@@ -229,7 +253,7 @@ class App extends React.Component {
                 <input type="submit" value="search"/>
               </form>
 
-              <select onChange={this.yearChange} value={this.state.year}>
+              <select onChange={this.yearChange} value={this.state.year.billYear}>
                 <option value="2009">2009</option>
                 <option value="2010">2010</option>
                 <option value="2011">2011</option>
