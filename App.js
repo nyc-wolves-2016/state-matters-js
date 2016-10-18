@@ -19,6 +19,7 @@ class App extends React.Component {
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
     this.yearChange = this.yearChange.bind(this);
+    this.showKeywordForm = this.showKeywordForm.bind(this);
     this.senatorChange = this.senatorChange.bind(this);
     this.state = {
       senatorInfo: {},
@@ -195,6 +196,7 @@ class App extends React.Component {
       });
 
     }.bind(this))
+
   }
 
 
@@ -226,7 +228,15 @@ class App extends React.Component {
     this.setState({
       currentBills: keywordSearchBills
     })
+    $('#timeline-filterables').find('li').show();
+    $('#timeline-filterables').find('form').remove();
   }
+
+    showKeywordForm() {
+       //   append form for keyword search to DOM and hide other filters
+       $('#timeline-filterables').find('li').hide();
+       $('#timeline-filterables').append("<div class='row' id='keywordDiv' style={this.formStyle()}><form class='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div class='keyword-search-box input-field col s9'><label for='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div class='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>");
+    }       
 
   render() {
     return(
@@ -241,17 +251,35 @@ class App extends React.Component {
           </div>
           <div className="slide">
             <RepInfoDisplay repDisplay={this.state.senatorInfo}/>
-              <button className="filter-button" type="button" onClick={this.closeBillsClicked}>close vote bills</button>
 
-              <button className="filter-button" type="button" onClick={this.sponsoredClicked}>{this.state.senatorInfo.fullName} sponsored bills</button>
 
-              <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
-                <div className="keyword-search-box">
-                  <label htmlFor="t">search bills by keyword:</label>
-                  <input ref="keywordBox" type="text"/>
-                </div>
-                <input type="submit" value="search"/>
-              </form>
+            <div className="materialize" id="timeline-filterables">
+                <ul className="row">
+                  <li className="col s4">
+                  {/* <button className="filter-button" type="button" onClick={this.yearClicked}>2016 close vote bills</button> */}
+                  <a className="waves-effect waves-light btn" onClick={this.closeBillsClicked}>close vote bills</a>
+                  </li>
+
+                  <li className="col s4">
+                  {/* <button className="filter-button" type="button" onClick={this.sponsoredClicked}>sponsored bills</button> */}
+                  <a className="waves-effect waves-light btn" onClick={this.sponsoredClicked}>Sponsored bills</a>
+                  </li>
+
+                  <li className="col s4">
+                  {/* <button className="filter-button" type="button" onClick={this.showKeywordForm}>Search by Keyword</button> */}
+                  <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
+                  </li>
+                </ul>
+
+            </div>
+
+              // <form className="keyword-search" type="button" onSubmit={this.keywordSearch}>
+              //   <div className="keyword-search-box">
+              //     <label htmlFor="t">search bills by keyword:</label>
+              //     <input ref="keywordBox" type="text"/>
+              //   </div>
+              //   <input type="submit" value="search"/>
+              // </form>
 
               <select onChange={this.yearChange} value={this.state.year.billYear}>
                 <option value="2009">2009</option>
