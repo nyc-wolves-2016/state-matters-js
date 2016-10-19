@@ -88,7 +88,7 @@ h1 {
 .timeline ul li:nth-child(odd) .big-box::before {
   left: -15px;
   border-width: 8px 16px 8px 0;
-  border-color: transparent #F45B69 transparent transparent;
+  border-color: transparent #26a69a transparent transparent;
 }
 
 .timeline ul li:nth-child(even) .big-box {
@@ -98,7 +98,7 @@ h1 {
 .timeline ul li:nth-child(even) .big-box::before {
   right: -15px;
   border-width: 8px 0 8px 16px;
-  border-color: transparent transparent transparent #F45B69;
+  border-color: transparent transparent transparent #26a69a;
 }
 
 time {
@@ -117,7 +117,7 @@ time {
 }
 
 .timeline ul li.in-view::after {
-  background: #F45B69;
+  background: #26a69a;
 }
 
 .timeline ul li .big-box {
@@ -183,7 +183,7 @@ time {
   position: relative;
   bottom: 0;
   width: 400px;
-  background: #F45B69;
+  background: #26a69a;
 }
 
 .big-box:hover .hover-box {
