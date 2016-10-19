@@ -210,7 +210,7 @@ class App extends React.Component {
                });
           allCleanBills =[...allCleanBills, ...cleanBills]
         })
-          var closeVoteBills = allCleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+          var closeVoteBills = allCleanBills.filter(bill => (Math.abs(bill.yay - bill.nay) < 20) && (bill.yay + bill.nay > 30))
           this.setState({showLoading: false, showForm: true});
           this.setState({
             currentBills: closeVoteBills
@@ -320,7 +320,7 @@ class App extends React.Component {
   }
 
   closeBillsClicked() {
-    var closeVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+    var closeVoteBills = this.state.bills[this.state.year.billYear].filter(bill => (Math.abs(bill.yay - bill.nay) < 20) && (bill.yay + bill.nay > 30));
 
     this.setState({
       currentBills: closeVoteBills
