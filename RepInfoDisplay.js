@@ -28,7 +28,7 @@ class RepInfoDisplay extends React.Component {
               <li className="collection-item avatar col s4">
                 <i className="material-icons circle">language</i>
                 <span className="title">Senator Website</span>
-                <p><a href={web}>{web}</a></p>
+                <p id="senatorLink"><a href={web}>{web}</a></p>
               </li>
 
             </ul>

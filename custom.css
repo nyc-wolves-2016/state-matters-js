@@ -91,3 +91,12 @@
 .intro {
   background-color: rgba(47,101,115,0.67);
 }
+
+#senatorLink a{
+  color: #1c2e33;
+}
+
+#timeline-ul .big-box {
+  background-color: #26a69a;
+  border-radius: 5px;
+}
