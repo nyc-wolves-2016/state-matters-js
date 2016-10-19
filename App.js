@@ -57,7 +57,6 @@ class App extends React.Component {
       var foundRep = response;
       foundRep = $.parseJSON(foundRep.slice(41, -2));
       foundRep = foundRep.rows[0];
-      debugger;
       var senatorFirstLast = foundRep[1].split(" ");
       var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
       var repObj = {
@@ -173,7 +172,7 @@ class App extends React.Component {
     var sessionYear = parseInt(this.state.year.sessionYear);
 
     $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=1000&full=true",
+        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true",
         method: "GET"
     })
     .done(function(response) {
@@ -215,29 +214,40 @@ class App extends React.Component {
         }
       });
 
-      if (billTotal > 1000) {
+      if (billTotal > 100 && this.state.showLoading) {
         var totalBills = tempBillsArray.concat(cleanBills);
-        var newBillTotal = billTotal - 1000;
-        var newOffset = offset + 1000;
-        this.getBills(newOffset, newBillTotal, totalBills)
-      }
-      else {
-        $.fn.fullpage.moveSlideRight();
+        var newBillTotal = billTotal - 100;
+        var newOffset = offset + 100;
+        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
         this.setState({showLoading: false, showForm: true});
+        this.setState({
+          currentBills: closeVoteBills
+        })
+        $.fn.fullpage.moveSlideRight();
+        this.getBills(newOffset, newBillTotal, totalBills)
+      } else if (billTotal > 100) {
+        var totalBills = tempBillsArray.concat(cleanBills);
+        var newBillTotal = billTotal - 100;
+        var newOffset = offset + 100;
+        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+        this.setState({
+          currentBills: closeVoteBills
+        })
+        this.getBills(newOffset, newBillTotal, totalBills)
+      } else {
         var totalBills = tempBillsArray.concat(cleanBills);
 
         var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
-
         var billsStateVar = this.state.bills;
         billsStateVar[this.state.year.billYear] = totalBills;
+        this.setState({
+          currentBills: closeVoteBills
+        })
 
         this.setState({
           bills: billsStateVar
         });
 
-        this.setState({
-          currentBills: closeVoteBills
-        })
       }
 
     }.bind(this))

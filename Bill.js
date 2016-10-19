@@ -41,7 +41,6 @@ class Bill extends React.Component {
         }
       ]
     };
-    debugger
     let pieChart = new Chart(this.refs.chart, {
       type: "pie",
       data: data
@@ -100,12 +99,10 @@ class Bill extends React.Component {
     var canvasTag = document.createElement("canvas")
     canvasTag.setAttribute("ref", "chart")
     canvasTag.setAttribute("id", this.props.supaKey)
-    debugger;
     let pieChart = new Chart(this.refs.chart, {
       type: "pie",
       data: data
     });
-    debugger;
   }
 
   //
