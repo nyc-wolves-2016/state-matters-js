@@ -302,11 +302,11 @@ class App extends React.Component {
     return(
       <div ref="test" id="fullpage">
         <div className="section">
-          <div className="slide">
+          <div id="landingPageBG" className="slide">
             <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
             { this.state.showLoading ? <Loading /> : null }
           </div>
-          <div className="slide">
+          <div id="page2BG" className="slide">
 
             <Timeline bills={this.state.currentBills} year={this.state.year} senatorInfo={this.state.senatorInfo} timelineFilters={timelineFilters} />
 

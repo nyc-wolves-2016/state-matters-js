@@ -16,7 +16,7 @@ body {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 .intro {
-  background: #F45B69;
+  background: #D3D3D3;
 }
 
 .container {
@@ -36,7 +36,7 @@ h1 {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 .timeline ul {
-  background: #456990;
+  background: #D3D3D3;
   padding: none;
 }
 
@@ -46,7 +46,7 @@ h1 {
   width: 6px;
   margin: 0 auto;
   padding-top: 50px;
-  background: #fff;
+  background: #26a69a;
 }
 
 .timeline ul li::after {

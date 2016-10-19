@@ -79,3 +79,15 @@
   background-color: #26a69a;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
 }
+
+#landingPageBG {
+  background-color: #D3D3D3;
+}
+
+#page2BG {
+  background-color: #D3D3D3;
+}
+
+.intro {
+  background-color: rgba(47,101,115,0.67);
+}
