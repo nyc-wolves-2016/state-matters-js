@@ -16,8 +16,8 @@ body {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 .intro {
-  background: #D3D3D3;
-  height: 205px;
+  background-color: rgba(47,101,115,0.67);
+  height: 235px;
 }
 
 .container {

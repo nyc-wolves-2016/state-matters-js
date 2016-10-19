@@ -33,6 +33,7 @@
 
 #keywordDiv {
   width: 100%;
+  padding-bottom: 20px;
 }
 
 #keyword-search-form {
@@ -44,7 +45,7 @@
 }
 
 #timeline-filterables {
-  padding-top: 20px;
+  padding-top: 25px;
 }
 
 #rep-info {
@@ -86,10 +87,6 @@
 
 #page2BG {
   background-color: #D3D3D3;
-}
-
-.intro {
-  background-color: rgba(47,101,115,0.67);
 }
 
 #senatorLink a{
