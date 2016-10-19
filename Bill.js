@@ -41,7 +41,6 @@ class Bill extends React.Component {
         }
       ]
     };
-    debugger
     let pieChart = new Chart(this.refs.chart, {
       type: "pie",
       data: data
@@ -100,12 +99,10 @@ class Bill extends React.Component {
     var canvasTag = document.createElement("canvas")
     canvasTag.setAttribute("ref", "chart")
     canvasTag.setAttribute("id", this.props.supaKey)
-    debugger;
     let pieChart = new Chart(this.refs.chart, {
       type: "pie",
       data: data
     });
-    debugger;
   }
 
   //
@@ -148,7 +145,8 @@ class Bill extends React.Component {
 
   render() {
 
-    let {year, title, yay, nay, senatorDecision, summary, status, date} = this.props.data
+    let {year, session, title, yay, nay, senatorDecision, summary, status, date, billId} = this.props.data
+
     let {supaKey, othaSupaKey} = this.props
     let othaOthaSupaKey = this.props.othaSupaKey + 1000
     let realKey = othaOthaSupaKey + 1000;
@@ -161,6 +159,7 @@ class Bill extends React.Component {
           <p>HOVER FOR MORE INFO</p>
           <div className="hover-box">
             <p>SUMMARY: {summary}</p>
+            <p>FURTHER DETAILS: <a href={"https://www.nysenate.gov/legislation/bills/" + session + "/" + billId}>bill webpage</a> | <a href={"http://legislation.nysenate.gov/api/3/bills/" + session + "/" + billId + ".pdf"}>bill pdf</a></p>
             <p>YAY: {yay}</p>
             <p>NAY: {nay}</p>
             <p>STATUS: {status}</p>

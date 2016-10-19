@@ -15,7 +15,7 @@ class App extends React.Component {
     super();
     this.geocodeIt = this.geocodeIt.bind(this);
     this.getBills = this.getBills.bind(this);
-    // this.getBillTotal = this.getBillTotal.bind(this);
+    this.getBillTotal = this.getBillTotal.bind(this);
     this.closeBillsClicked = this.closeBillsClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
@@ -43,8 +43,8 @@ class App extends React.Component {
       var lat = response.results[0].geometry.location.lat
       var lng = response.results[0].geometry.location.lng
       this.getSenator(lat + '%2C%20' + lng )
-      this.getAssembly(lat + '%2C%20' + lng )
-      this.getCongress(lat + '%2C%20' + lng )
+      // this.getAssembly(lat + '%2C%20' + lng )
+      // this.getCongress(lat + '%2C%20' + lng )
     })
   }
 
@@ -72,40 +72,40 @@ class App extends React.Component {
       // retrieve later when non-default year is specified
 
 
-      // this.getBillTotal()
+      this.getBillTotal();
 
-      this.getBills()
+      // this.getBills()
 
     }.bind(this))
     .fail(function(response) {
     }.bind(this));
   }
 
-  getAssembly(latLng) {
-    $.ajax({
-      url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%2017nwTkaJDQ5AyfTtnX96SeBzRNZRekwKeonIZHvw%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListass&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery1710929156077118652_1476403682128&_=1476403735798",
-      method: 'get'
-    })
-    .done(function(response) {
-    }).fail(function(response) {
-      var foundRep = response.responseText;
-      foundRep = $.parseJSON(foundRep.slice(39, -2));
-      foundRep = foundRep.rows[0];
-    });
-  }
+  // getAssembly(latLng) {
+  //   $.ajax({
+  //     url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%2017nwTkaJDQ5AyfTtnX96SeBzRNZRekwKeonIZHvw%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListass&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery1710929156077118652_1476403682128&_=1476403735798",
+  //     method: 'get'
+  //   })
+  //   .done(function(response) {
+  //   }).fail(function(response) {
+  //     var foundRep = response.responseText;
+  //     foundRep = $.parseJSON(foundRep.slice(39, -2));
+  //     foundRep = foundRep.rows[0];
+  //   });
+  // }
 
-  getCongress(latLng) {
-    $.ajax({
-      url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201GFWTwdhLbQ8yprvFNe-XNkrm1Ik-vPFFynaxg3g%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListcon&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349225&_=1476457378114",
-      method: 'get'
-    })
-    .done(function(response) {
-    }).fail(function(response) {
-      var foundRep = response.responseText;
-      foundRep = $.parseJSON(foundRep.slice(39, -2));
-      foundRep = foundRep.rows[0];
-    });
-  }
+  // getCongress(latLng) {
+  //   $.ajax({
+  //     url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201GFWTwdhLbQ8yprvFNe-XNkrm1Ik-vPFFynaxg3g%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListcon&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349225&_=1476457378114",
+  //     method: 'get'
+  //   })
+  //   .done(function(response) {
+  //   }).fail(function(response) {
+  //     var foundRep = response.responseText;
+  //     foundRep = $.parseJSON(foundRep.slice(39, -2));
+  //     foundRep = foundRep.rows[0];
+  //   });
+  // }
 
   senatorChange(chosenBillYear, chosenSessionYear){
 
@@ -116,7 +116,7 @@ class App extends React.Component {
 
     var district = this.state.senatorInfo.district;
     $.ajax({
-      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE'" + " AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
       method: "GET"
     })
     .done(function(response) {
@@ -132,7 +132,8 @@ class App extends React.Component {
         var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
         this.setState({ currentBills: cleanCloserVoteBills })
       }
-      else { this.getBills(); }
+      else { this.getBillTotal(); }
+      // else { this.getBills(); }
 
     }.bind(this))
   }
@@ -152,31 +153,32 @@ class App extends React.Component {
     this.senatorChange(chosenBillYear, chosenSessionYear)
   }
 
-  // getBillTotal() {
-  //   $.ajax({
-  //     url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
-  //     method: "GET"
-  //   })
-  //   .done(function(response) {
-  //     var billTotal = response.total;
-  //     this.getBills(1, billTotal)
-  //   }.bind(this))
-  // }
+  getBillTotal() {
+    $.ajax({
+      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+      method: "GET"
+    })
+    .done(function(response) {
+      var billTotal = response.total;
 
-  getBills(offset=1, billTotal=0) {
+      this.getBills(1, billTotal)
+
+    }.bind(this))
+  }
+
+  getBills(offset=1, billTotal=0, tempBillsArray=[]) {
 
     var billYear = parseInt(this.state.year.billYear);
     var sessionYear = parseInt(this.state.year.sessionYear);
 
     $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + this.state.offset + "&limit=1000&full=true",
+        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true",
         method: "GET"
     })
     .done(function(response) {
       // bills w/ floor votes
-      this.setState({showLoading: false, showForm: true});
 
-      $.fn.fullpage.moveSlideRight();
+
 
       var allBills = response.result.items;
 
@@ -203,39 +205,50 @@ class App extends React.Component {
                 yay: yaysArray[i].size,
                 nay: naysArray[i].size,
                 senatorDecision: senatorVotes[i],
-                summary: bill.result.summary,
+                summary: bill.result.summary.slice(0, (bill.result.title.length * 2)) + "...",
                 status: bill.result.status.statusDesc,
                 date: bill.result.status.actionDate,
                 sponsor: billSponsors[i],
-                billId: bill.result.basePrintNoStr
+                session: bill.result.session,
+                billId: bill.result.printNo
         }
       });
 
-      var cleanCloserVoteBills = cleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+      if (billTotal > 100 && this.state.showLoading) {
+        var totalBills = tempBillsArray.concat(cleanBills);
+        var newBillTotal = billTotal - 100;
+        var newOffset = offset + 100;
+        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+        this.setState({showLoading: false, showForm: true});
+        this.setState({
+          currentBills: closeVoteBills
+        })
+        $.fn.fullpage.moveSlideRight();
+        this.getBills(newOffset, newBillTotal, totalBills)
+      } else if (billTotal > 100) {
+        var totalBills = tempBillsArray.concat(cleanBills);
+        var newBillTotal = billTotal - 100;
+        var newOffset = offset + 100;
+        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+        this.setState({
+          currentBills: closeVoteBills
+        })
+        this.getBills(newOffset, newBillTotal, totalBills)
+      } else {
+        var totalBills = tempBillsArray.concat(cleanBills);
 
-      var allYearsBills = this.state.bills;
-      allYearsBills[this.state.year.billYear] = cleanBills;
+        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+        var billsStateVar = this.state.bills;
+        billsStateVar[this.state.year.billYear] = totalBills;
+        this.setState({
+          currentBills: closeVoteBills
+        })
 
-      // if (allYearsBills[this.state.year.billYear]) {
-      //   allYearsBills[this.state.year.billYear] = [...allYearsBills[this.state.year.billYear], cleanBills];
-      // } else {
-      //   allYearsBills[this.state.year.billYear] = cleanBills;
-      // }
+        this.setState({
+          bills: billsStateVar
+        });
 
-      // if (billTotal > 1000) {
-      //   newBillTotal = billTotal - 1000;
-      //   newOffset = offset + 1000
-      //   getBills(newOffset, newBillTotal)
-      // }
-
-      this.setState({
-        bills: allYearsBills
-      });
-
-
-      this.setState({
-        currentBills: cleanCloserVoteBills
-      });
+      }
 
     }.bind(this))
 
@@ -247,10 +260,10 @@ class App extends React.Component {
   }
 
   closeBillsClicked() {
-    var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+    var closeVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
 
     this.setState({
-      currentBills: cleanCloserVoteBills
+      currentBills: closeVoteBills
     })
   }
 
