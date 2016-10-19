@@ -170,8 +170,59 @@ class App extends React.Component {
         allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
         }
       }
-      Promise.all([allBillz]).then(values => {
+      let test = []
+      Promise.all(allBillz).then(billGlobs => {
+        var allCleanBills = [];
+        billGlobs.forEach(billGlob => {
+          var allBills = billGlob.result.items;
+
+          var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+          var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
+
+          var yays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE);
+          var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
+
+          var senatorVotes = allBills.map(bill => {
+            if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
+            else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
+            else { return "n/a" }
+          })
+
+          var billSponsors = allBills.map(bill => {
+            if (bill.result.sponsor.member !== null) { return bill.result.sponsor.member.fullName }
+            else { return "n/a" }
+          })
+
+          var cleanBills = allBills.map((bill, i) => {
+            return {
+                    title: bill.result.title,
+                    year: bill.result.year,
+                    yay: yaysArray[i].size,
+                    nay: naysArray[i].size,
+                    senatorDecision: senatorVotes[i],
+                    summary: bill.result.summary.slice(0, (bill.result.title.length * 2)) + "...",
+                    status: bill.result.status.statusDesc,
+                    date: bill.result.status.actionDate,
+                    sponsor: billSponsors[i],
+                    session: bill.result.session,
+                    billId: bill.result.printNo
+                  }
+               });
+          allCleanBills =[...allCleanBills, ...cleanBills]
+        })
+          var closeVoteBills = allCleanBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+          this.setState({showLoading: false, showForm: true});
+          this.setState({
+            currentBills: closeVoteBills
+          })
+          var billsStateVar = this.state.bills;
+          billsStateVar[this.state.year.billYear] = allCleanBills;
+          this.setState({
+            bills: billsStateVar
+          });
+          $.fn.fullpage.moveSlideRight();
       })
+      // $.when.apply($, all);?
     }.bind(this))
   }
 
@@ -185,7 +236,7 @@ class App extends React.Component {
   //       method: "GET"
   //   })
   //   .done(function(response) {
-  //     // bills w/ floor votes
+  // //     // bills w/ floor votes
 
 
 
@@ -219,9 +270,9 @@ class App extends React.Component {
   //               date: bill.result.status.actionDate,
   //               sponsor: billSponsors[i],
   //               session: bill.result.session,
-  //               billId: bill.result.printNo
-  //       }
-  //     });
+  // //               billId: bill.result.printNo
+  // //       }
+  // //     });
 
   //     if (billTotal > 100 && this.state.showLoading) {
   //       var totalBills = tempBillsArray.concat(cleanBills);
