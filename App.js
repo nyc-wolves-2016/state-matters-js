@@ -57,6 +57,7 @@ class App extends React.Component {
       var foundRep = response;
       foundRep = $.parseJSON(foundRep.slice(41, -2));
       foundRep = foundRep.rows[0];
+      debugger;
       var senatorFirstLast = foundRep[1].split(" ");
       var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
       var repObj = {
@@ -205,7 +206,7 @@ class App extends React.Component {
                 yay: yaysArray[i].size,
                 nay: naysArray[i].size,
                 senatorDecision: senatorVotes[i],
-                summary: bill.result.summary.slice(0, (bill.result.title.length * 2)),
+                summary: bill.result.summary.slice(0, (bill.result.title.length * 2)) + "...",
                 status: bill.result.status.statusDesc,
                 date: bill.result.status.actionDate,
                 sponsor: billSponsors[i],
