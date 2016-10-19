@@ -1,3 +1,5 @@
+
+
 #main-form {
   width: 85%;
   padding-top: 80px;
@@ -14,7 +16,7 @@
 }
 
 #rep-info span {
-  color: #868c88;
+  color: white;
 }
 
 #timeline-filterables, #timeline-filterables ul {
@@ -42,14 +44,62 @@
 }
 
 #timeline-filterables {
-  padding-top: 60px;
+  padding-top: 20px;
 }
 
 #rep-info {
-  padding-top: 10px;
+  padding-top: 3px;
   height: 60px;
 }
 
 #timeline-title {
-  padding-top: 50px;
+  padding-top: 15px;
+}
+
+#year-search {
+  margin-top: 0px;
+  padding: 0 0.75rem
+  background-color: #26a69a;
+  height: 36px;
+  z-index: 1;
+}
+
+#year-search select {
+  background-color: #26a69a;
+  border: none;
+  height: 36px;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+.timeline-buttons a {
+  border-radius: 20px;
+}
+
+#repInfoUL i {
+  background-color: #26a69a;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+#landingPageBG {
+  background-color: #D3D3D3;
+}
+
+#page2BG {
+  background-color: #D3D3D3;
+}
+
+.intro {
+  background-color: rgba(47,101,115,0.67);
+}
+
+#senatorLink a{
+  color: #1c2e33;
+}
+
+#timeline-ul .big-box {
+  background-color: #26a69a;
+  border-radius: 5px;
+}
+#main-form input {
+  color: #26a69a;
 }

@@ -225,7 +225,7 @@ class App extends React.Component {
     }.bind(this))
   }
 
-  
+
 
 
   componentDidMount(){
@@ -281,7 +281,7 @@ class App extends React.Component {
                     <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
                 </li>
 
-                <li className="input-field col s3">
+                <li id="year-search" className="input-field col s3">
                     <select onChange={this.yearChange} value={this.state.year.billYear}>
                         <option value="Choose your option" disabled></option>
                         <option value="2009">2009</option>
@@ -293,7 +293,6 @@ class App extends React.Component {
                         <option value="2015">2015</option>
                         <option value="2016">2016</option>
                     </select>
-                    <label>Search by Year</label>
                 </li>
             </ul>
 
@@ -303,11 +302,11 @@ class App extends React.Component {
     return(
       <div ref="test" id="fullpage">
         <div className="section">
-          <div className="slide">
+          <div id="landingPageBG" className="slide">
             <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
             { this.state.showLoading ? <Loading /> : null }
           </div>
-          <div className="slide">
+          <div id="page2BG" className="slide">
 
             <Timeline bills={this.state.currentBills} year={this.state.year} senatorInfo={this.state.senatorInfo} timelineFilters={timelineFilters} />
 

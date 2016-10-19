@@ -29,7 +29,7 @@ class Timeline extends React.Component {
           <div className="container">
             <RepInfoDisplay repDisplay={this.props.senatorInfo} />
 
-            <h1 id="timeline-title">{year.billYear} BILLS &darr;</h1>
+            <h1 id="timeline-title">{year.billYear} BILLS </h1>
 
             <div className="materialize" id="timeline-filterables">
                 {this.props.timelineFilters}
@@ -43,7 +43,7 @@ class Timeline extends React.Component {
         </section>
 
         <section className="timeline">
-          <ul>
+          <ul id="timeline-ul">
             {bills.map((bill, idx) => <Bill data={bill} key={idx} supaKey={idx} othaSupaKey={idx+1000} />)}
           </ul>
         </section>
