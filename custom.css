@@ -100,3 +100,7 @@
 #main-form input {
   color: #26a69a;
 }
+
+#timeline-filterables .clickedOn {
+  background-color: #8ec4bf;
+}

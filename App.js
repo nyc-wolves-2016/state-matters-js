@@ -8,6 +8,7 @@ import setupListeners from './timeline_fcns';
 import {IScroll} from 'fullpage.js';
 import fullpage from 'fullpage.js';
 import Loading from './Loading.js';
+import jQueryify from './custom_jquery.js';
 
 
 class App extends React.Component {
@@ -30,7 +31,10 @@ class App extends React.Component {
       offset: '1',
       showLoading: false,
       showForm: true,
-      showKeywordSearchForm: false
+      showKeywordSearchForm: false,
+      closeVoteClicked: true,
+      sponsoredClicked: false,
+      yearClicked: false
     }
   }
 
@@ -146,7 +150,7 @@ class App extends React.Component {
     else { var chosenSessionYear = chosenBillYear }
 
     this.setState({
-      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear }
+      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear}, closeVoteClicked: false, sponsoredClicked: false, yearClicked: true
     });
 
     this.senatorChange(chosenBillYear, chosenSessionYear)
@@ -236,7 +240,10 @@ class App extends React.Component {
     var closeVoteBills = this.state.bills[this.state.year.billYear].filter(bill => (Math.abs(bill.yay - bill.nay) < 20) && (bill.yay + bill.nay > 30));
 
     this.setState({
-      currentBills: closeVoteBills
+      currentBills: closeVoteBills,
+      closeVoteClicked: true,
+      yearClicked: false,
+      sponsoredClicked: false
     })
   }
 
@@ -244,7 +251,10 @@ class App extends React.Component {
     var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
 
     this.setState({
-      currentBills: senatorSponsoredBills
+      currentBills: senatorSponsoredBills,
+      sponsoredClicked: true,
+      closeVoteClicked: false,
+      yearClicked: false
     })
   }
 
@@ -263,18 +273,36 @@ class App extends React.Component {
         this.setState({showKeywordSearchForm: true})
     }
 
-  render() {
+    render() {
+        if (this.state.closeVoteClicked) {
+            var closeVoteClickedClass = " clickedOn";
+        } else {
+            var closeVoteClickedClass = "";
+        }
+
+        if (this.state.sponsoredClicked) {
+            var sponsoredClickedClass = " clickedOn";
+        } else {
+            var sponsoredClickedClass = "";
+        }
+
+        if (this.state.yearClicked) {
+            var yearClickedClass = " clickedOn";
+        } else {
+            var yearClickedClass = "";
+        }
+
       if (this.state.showKeywordSearchForm) {
             var timelineFilters = <div className='row' id='keywordDiv'><form className='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div className='keyword-search-box input-field col s9'><label htmlFor='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div className='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>
       } else {
             var timelineFilters =
             <ul className="row">
                 <li className="col s3">
-                    <a className="waves-effect waves-light btn" onClick={this.closeBillsClicked}>close vote bills</a>
+                    <a id="closeVoteButton" className={"waves-effect waves-light btn"+closeVoteClickedClass} onClick={this.closeBillsClicked}>close vote bills</a>
                 </li>
 
                 <li className="col s3">
-                    <a className="waves-effect waves-light btn" onClick={this.sponsoredClicked}>Sponsored bills</a>
+                    <a className={"waves-effect waves-light btn"+sponsoredClickedClass} onClick={this.sponsoredClicked}>Sponsored bills</a>
                 </li>
 
                 <li className="col s3">
@@ -282,7 +310,7 @@ class App extends React.Component {
                 </li>
 
                 <li id="year-search" className="input-field col s3">
-                    <select onChange={this.yearChange} value={this.state.year.billYear}>
+                    <select className={yearClickedClass} onChange={this.yearChange} value={this.state.year.billYear}>
                         <option value="Choose your option" disabled></option>
                         <option value="2009">2009</option>
                         <option value="2010">2010</option>
@@ -308,7 +336,7 @@ class App extends React.Component {
           </div>
           <div id="page2BG" className="slide">
 
-            <Timeline bills={this.state.currentBills} year={this.state.year} senatorInfo={this.state.senatorInfo} timelineFilters={timelineFilters} />
+            <Timeline bills={this.state.currentBills} year={this.state.year} senatorInfo={this.state.senatorInfo} timelineFilters={timelineFilters} closeVoteClicked={this.state.closeVoteClicked}/>
 
           </div>
           <div className="fp-controlArrow fp-next"></div>
