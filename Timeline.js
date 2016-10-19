@@ -29,7 +29,7 @@ class Timeline extends React.Component {
           <div className="container">
             <RepInfoDisplay repDisplay={this.props.senatorInfo} />
 
-            <h1 id="timeline-title">{year.billYear} BILLS &darr;</h1>
+            <h1 id="timeline-title">{year.billYear} BILLS </h1>
 
             <div className="materialize" id="timeline-filterables">
                 {this.props.timelineFilters}

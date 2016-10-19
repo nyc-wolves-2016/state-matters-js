@@ -14,7 +14,7 @@
 }
 
 #rep-info span {
-  color: #868c88;
+  color: white;
 }
 
 #timeline-filterables, #timeline-filterables ul {
@@ -52,4 +52,22 @@
 
 #timeline-title {
   padding-top: 50px;
+}
+
+#year-search {
+  margin-top: 0px;
+  padding: 0 0.75rem
+  background-color: #26a69a;
+  height: 36px;
+  z-index: 1;
+}
+
+#year-search select {
+  background-color: #26a69a;
+  border: none;
+  height: 36px;
+}
+
+.timeline-buttons a {
+  border-radius: 20px;
 }
