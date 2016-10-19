@@ -14,7 +14,7 @@ class App extends React.Component {
   constructor() {
     super();
     this.geocodeIt = this.geocodeIt.bind(this);
-    this.getBills = this.getBills.bind(this);
+    // this.getBills = this.getBills.bind(this);
     this.getBillTotal = this.getBillTotal.bind(this);
     this.closeBillsClicked = this.closeBillsClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
@@ -160,99 +160,108 @@ class App extends React.Component {
     })
     .done(function(response) {
       var billTotal = response.total;
-
-      this.getBills(1, billTotal)
-
-    }.bind(this))
-  }
-
-  getBills(offset=1, billTotal=0, tempBillsArray=[]) {
-
-    var billYear = parseInt(this.state.year.billYear);
-    var sessionYear = parseInt(this.state.year.sessionYear);
-
-    $.ajax({
-        url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true",
-        method: "GET"
-    })
-    .done(function(response) {
-      // bills w/ floor votes
-
-
-
-      var allBills = response.result.items;
-
-      var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
-      var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
-
-      var yays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE);
-      var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
-
-      var senatorVotes = allBills.map(bill => {
-        if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
-        else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
-        else { return "n/a" }
-      })
-
-      var billSponsors = allBills.map(bill => {
-        if (bill.result.sponsor.member !== null) { return bill.result.sponsor.member.fullName }
-        else { return "n/a" }
-      })
-
-      var cleanBills = allBills.map((bill, i) => {
-        return {title: bill.result.title,
-                year: bill.result.year,
-                yay: yaysArray[i].size,
-                nay: naysArray[i].size,
-                senatorDecision: senatorVotes[i],
-                summary: bill.result.summary.slice(0, (bill.result.title.length * 2)) + "...",
-                status: bill.result.status.statusDesc,
-                date: bill.result.status.actionDate,
-                sponsor: billSponsors[i],
-                session: bill.result.session,
-                billId: bill.result.printNo
-        }
-      });
-
-      if (billTotal > 100 && this.state.showLoading) {
-        var totalBills = tempBillsArray.concat(cleanBills);
-        var newBillTotal = billTotal - 100;
-        var newOffset = offset + 100;
-        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
-        this.setState({showLoading: false, showForm: true});
-        this.setState({
-          currentBills: closeVoteBills
-        })
-        $.fn.fullpage.moveSlideRight();
-        this.getBills(newOffset, newBillTotal, totalBills)
-      } else if (billTotal > 100) {
-        var totalBills = tempBillsArray.concat(cleanBills);
-        var newBillTotal = billTotal - 100;
-        var newOffset = offset + 100;
-        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
-        this.setState({
-          currentBills: closeVoteBills
-        })
-        this.getBills(newOffset, newBillTotal, totalBills)
+      var allBillz = [];
+      var billYear = parseInt(this.state.year.billYear);
+      var sessionYear = parseInt(this.state.year.sessionYear)
+      for (var i = 1; i < Math.ceil(billTotal/100); i+=1) {
+        let offset = i * 100
+        if ( i === 1) { allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
       } else {
-        var totalBills = tempBillsArray.concat(cleanBills);
-
-        var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
-        var billsStateVar = this.state.bills;
-        billsStateVar[this.state.year.billYear] = totalBills;
-        this.setState({
-          currentBills: closeVoteBills
-        })
-
-        this.setState({
-          bills: billsStateVar
-        });
-
+        allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
+        }
       }
-
+      Promise.all([allBillz]).then(values => {
+      })
     }.bind(this))
-
   }
+
+  // getBills(offset=1, billTotal=0, tempBillsArray=[]) {
+
+    // var billYear = parseInt(this.state.year.billYear);
+    // var sessionYear = parseInt(this.state.year.sessionYear);
+
+  //   $.ajax({
+  //       url: "http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true",
+  //       method: "GET"
+  //   })
+  //   .done(function(response) {
+  //     // bills w/ floor votes
+
+
+
+  //     var allBills = response.result.items;
+
+  //     var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+  //     var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
+
+  //     var yays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE);
+  //     var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
+
+  //     var senatorVotes = allBills.map(bill => {
+  //       if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
+  //       else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
+  //       else { return "n/a" }
+  //     })
+
+  //     var billSponsors = allBills.map(bill => {
+  //       if (bill.result.sponsor.member !== null) { return bill.result.sponsor.member.fullName }
+  //       else { return "n/a" }
+  //     })
+
+  //     var cleanBills = allBills.map((bill, i) => {
+  //       return {title: bill.result.title,
+  //               year: bill.result.year,
+  //               yay: yaysArray[i].size,
+  //               nay: naysArray[i].size,
+  //               senatorDecision: senatorVotes[i],
+  //               summary: bill.result.summary.slice(0, (bill.result.title.length * 2)) + "...",
+  //               status: bill.result.status.statusDesc,
+  //               date: bill.result.status.actionDate,
+  //               sponsor: billSponsors[i],
+  //               session: bill.result.session,
+  //               billId: bill.result.printNo
+  //       }
+  //     });
+
+  //     if (billTotal > 100 && this.state.showLoading) {
+  //       var totalBills = tempBillsArray.concat(cleanBills);
+  //       var newBillTotal = billTotal - 100;
+  //       var newOffset = offset + 100;
+  //       var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20)
+  //       this.setState({showLoading: false, showForm: true});
+  //       this.setState({
+  //         currentBills: closeVoteBills
+  //       })
+  //       $.fn.fullpage.moveSlideRight();
+  //       this.getBills(newOffset, newBillTotal, totalBills)
+  //     } else if (billTotal > 100) {
+  //       var totalBills = tempBillsArray.concat(cleanBills);
+  //       var newBillTotal = billTotal - 100;
+  //       var newOffset = offset + 100;
+  //       var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+  //       this.setState({
+  //         currentBills: closeVoteBills
+  //       })
+  //       this.getBills(newOffset, newBillTotal, totalBills)
+  //     } else {
+  //       var totalBills = tempBillsArray.concat(cleanBills);
+
+  //       var closeVoteBills = totalBills.filter(bill => Math.abs(bill.yay - bill.nay) < 20);
+  //       var billsStateVar = this.state.bills;
+  //       billsStateVar[this.state.year.billYear] = totalBills;
+  //       this.setState({
+  //         currentBills: closeVoteBills
+  //       })
+
+  //       this.setState({
+  //         bills: billsStateVar
+  //       });
+
+  //     }
+
+  //   }.bind(this))
+
+  // }
 
 
   componentDidMount(){
