@@ -12,13 +12,12 @@ class Bill extends React.Component {
   }
 
   componentDidMount() {
-    $.fn.fullpage.reBuild();
-    $.fn.fullpage.setAutoScrolling(false);
-    $.fn.fullpage.setFitToSection(false);
+    // $.fn.fullpage.reBuild();
+    // $.fn.fullpage.setAutoScrolling(false);
+    // $.fn.fullpage.setFitToSection(false);
 
 
     let {year, title, yay, nay, repDecision, summary} = this.props.data
-    setupListeners();
 
     Chart.defaults.global.defaultFontColor = "white";
 
