@@ -41,7 +41,7 @@ class Bill extends React.Component {
         }
       ]
     };
-
+    debugger
     let pieChart = new Chart(this.refs.chart, {
       type: "pie",
       data: data
@@ -51,14 +51,29 @@ class Bill extends React.Component {
   shouldComponentUpdate(newProps) {
     var othaOthaSupaKey = this.props.othaSupaKey + 1000;
     var canvasHolderId = "#"+othaOthaSupaKey;
-    $("#"+othaOthaSupaKey).find('canvas').remove();
-    // $("#"+othaOthaSupaKey).find('iframe').remove();
+    // $(canvasHolderId).find('canvas').remove();
+    $(canvasHolderId).find('iframe').remove();
+    //
 
-    var freshCanvas = "<canvas ref='chart' id="+this.props.supaKey+"></canvas>";
-    $(canvasHolderId).append(freshCanvas);
+    //
+    //
 
 
-    let {year, title, yay, nay, repDecision, summary} = newProps.data
+    return true;
+  }
+
+  componentWillReceiveProps(newProps) {
+
+
+  }
+
+  componentDidUpdate(){
+    var othaOthaSupaKey = this.props.othaSupaKey + 1000;
+    var realKey = othaOthaSupaKey + 1000;
+    var canvasHolderId = "#"+othaOthaSupaKey;
+    var freshCanvas = "<canvas ref='chart' id="+this.props.supaKey+" style='display: block; width: 0px; height: 0px;' width='0' height='0'>";
+    // $(canvasHolderId).append(freshCanvas);
+    let {year, title, yay, nay, repDecision, summary} = this.props.data
 
     Chart.defaults.global.defaultFontColor = "white";
 
@@ -82,20 +97,15 @@ class Bill extends React.Component {
       ]
     };
 
-
+    var canvasTag = document.createElement("canvas")
+    canvasTag.setAttribute("ref", "chart")
+    canvasTag.setAttribute("id", this.props.supaKey)
     debugger;
     let pieChart = new Chart(this.refs.chart, {
       type: "pie",
       data: data
     });
-
-    return true;
-  }
-
-  componentWillReceiveProps(newProps) {
-
-    // debugger;
-
+    debugger;
   }
 
   //
@@ -141,6 +151,8 @@ class Bill extends React.Component {
     let {year, title, yay, nay, senatorDecision, summary, status, date} = this.props.data
     let {supaKey, othaSupaKey} = this.props
     let othaOthaSupaKey = this.props.othaSupaKey + 1000
+    let realKey = othaOthaSupaKey + 1000;
+
     return(
       <li id={othaSupaKey}>
         <div className="big-box">
@@ -153,7 +165,7 @@ class Bill extends React.Component {
             <p>NAY: {nay}</p>
             <p>STATUS: {status}</p>
             <p>ACTION DATE: {date}</p>
-            <p id={othaOthaSupaKey} ref="holder"><canvas ref="chart" id={supaKey}></canvas></p>
+            <p id={othaOthaSupaKey} ref="holder"><canvas ref="chart" id={realKey}></canvas></p>
           </div>
         </div>
       </li>
