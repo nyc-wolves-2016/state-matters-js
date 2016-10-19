@@ -12,13 +12,12 @@ class Bill extends React.Component {
   }
 
   componentDidMount() {
-    $.fn.fullpage.reBuild();
-    $.fn.fullpage.setAutoScrolling(false);
-    $.fn.fullpage.setFitToSection(false);
+    // $.fn.fullpage.reBuild();
+    // $.fn.fullpage.setAutoScrolling(false);
+    // $.fn.fullpage.setFitToSection(false);
 
 
     let {year, title, yay, nay, repDecision, summary} = this.props.data
-    setupListeners();
 
     Chart.defaults.global.defaultFontColor = "white";
 
@@ -145,7 +144,8 @@ class Bill extends React.Component {
 
   render() {
 
-    let {year, title, yay, nay, senatorDecision, summary, status, date} = this.props.data
+    let {year, session, title, yay, nay, senatorDecision, summary, status, date, billId} = this.props.data
+
     let {supaKey, othaSupaKey} = this.props
     let othaOthaSupaKey = this.props.othaSupaKey + 1000
     let realKey = othaOthaSupaKey + 1000;
@@ -158,6 +158,7 @@ class Bill extends React.Component {
           <p>HOVER FOR MORE INFO</p>
           <div className="hover-box">
             <p>SUMMARY: {summary}</p>
+            <p>FURTHER DETAILS: <a href={"https://www.nysenate.gov/legislation/bills/" + session + "/" + billId}>bill webpage</a> | <a href={"http://legislation.nysenate.gov/api/3/bills/" + session + "/" + billId + ".pdf"}>bill pdf</a></p>
             <p>YAY: {yay}</p>
             <p>NAY: {nay}</p>
             <p>STATUS: {status}</p>
