@@ -21,12 +21,15 @@ function setupListeners() {
   function toggleAppearance() {
     // debugger;
     for (var i = 0; i < items.length; i++) {
-      
-        items[i].classList.add("in-view");
-      }
+        if (isElementInViewport(items[i])) {
+            items[i].classList.add("in-view");
+        } else {
+            // items[i].classList.remove("in-view");
+        }
+    }
   }
 
-  toggleAppearance();
+  window.setInterval(toggleAppearance, 650);
 }
 
 export default setupListeners;
