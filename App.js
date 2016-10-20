@@ -37,12 +37,13 @@ class App extends React.Component {
       closeVoteClicked: true,
       sponsoredClicked: false,
       yearClicked: false,
-      keywordClicked: false
+      keywordClicked: false,
+      showLoadingLine: false
     }
   }
 
   geocodeIt(fullAddress){
-    this.setState({showLoading: true, showForm: false})
+    this.setState({showLoading: true, showForm: false, showLoadingLine: true})
     $.ajax({
       url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
     })
@@ -153,7 +154,7 @@ class App extends React.Component {
       else { var chosenSessionYear = chosenBillYear }
 
       this.setState({
-        year: { billYear: chosenBillYear, sessionYear: chosenSessionYear}, closeVoteClicked: false, sponsoredClicked: false, yearClicked: true, keywordClicked: false
+        year: { billYear: chosenBillYear, sessionYear: chosenSessionYear}, closeVoteClicked: false, sponsoredClicked: false, yearClicked: true, keywordClicked: false, showLoadingLine: true
       });
 
       this.senatorChange(chosenBillYear, chosenSessionYear)
@@ -273,7 +274,7 @@ class App extends React.Component {
 
           // ]
 
-          this.setState({showLoading: false, showForm: true});
+          this.setState({showLoading: false, showForm: true, showLoadingLine: false});
           this.setState({
             currentBills: closeVoteBills
           })
@@ -367,6 +368,12 @@ class App extends React.Component {
             var keywordClickedClass = "";
         }
 
+        if (this.state.showLoadingLine) {
+            var loadingText = "Fetching bill info...";
+        } else {
+            var loadingText = "";
+        }
+
       if (this.state.showKeywordSearchForm) {
             var timelineFilters = <div className='row' id='keywordDiv'><form className='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div className='keyword-search-box input-field col s9'><label htmlFor='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div className='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>
       } else {
@@ -408,6 +415,7 @@ class App extends React.Component {
           <div id="landingPageBG" className="slide">
             <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
             {/* { this.state.showLoading ? <Loading /> : null } */}
+            <h2 id="loading-line">{loadingText}</h2>
             <h1 id="main-font">STATE MATTERS</h1>
           </div>
           <div id="page2BG" className="slide">
