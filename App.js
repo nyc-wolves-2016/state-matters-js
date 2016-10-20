@@ -333,6 +333,7 @@ class App extends React.Component {
           <div id="landingPageBG" className="slide">
             <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
             { this.state.showLoading ? <Loading /> : null }
+            <h1 id="main-font">STATE MATTERS</h1>
           </div>
           <div id="page2BG" className="slide">
 

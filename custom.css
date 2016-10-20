@@ -2,7 +2,8 @@
 
 #main-form {
   width: 85%;
-  padding-top: 80px;
+  z-index: 69;
+  margin-bottom: 530px;
 }
 
 #supaButton {
@@ -82,7 +83,9 @@
 }
 
 #landingPageBG {
-  background-color: #D3D3D3;
+  background: url(nycSkyline.jpg);
+  /*background-repeat: no-repeat;*/
+  background-size: cover;
 }
 
 #page2BG {
@@ -90,17 +93,27 @@
 }
 
 #senatorLink a{
-  color: #1c2e33;
+  color: #000000;
 }
 
 #timeline-ul .big-box {
   background-color: #26a69a;
   border-radius: 5px;
 }
+
 #main-form input {
-  color: #26a69a;
+  color: black;
 }
 
 #timeline-filterables .clickedOn {
   background-color: #8ec4bf;
+}
+
+#main-font {
+  position: fixed;
+  color: white;
+  bottom: 100px;
+  left: 50px;
+  /*top: 800px;
+  left: 60px;*/
 }
