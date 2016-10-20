@@ -115,7 +115,7 @@ class App extends React.Component {
 
     var district = this.state.senatorInfo.district;
     $.ajax({
-      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=RPQrYAiTpPHZZAyUnSXnLC29YM6e1h9r=true",
       method: "GET"
     })
     .done(function(response) {

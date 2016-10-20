@@ -103,3 +103,8 @@
 #main-form input {
   color: #26a69a;
 }
+
+#billInfo {
+  font-style: italic;
+  font-weight: bold;
+}

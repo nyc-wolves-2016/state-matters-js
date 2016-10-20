@@ -86,10 +86,6 @@ class Bill extends React.Component {
           backgroundColor: [
             "red",
             "blue"
-          ],
-          hoverBackgroundColor: [
-            "#FF6384",
-            "#36A2EB"
           ]
         }
       ]
@@ -153,17 +149,17 @@ class Bill extends React.Component {
     return(
       <li id={othaSupaKey}>
         <div className="big-box">
-          <p>TITLE: {title}</p>
-          <p>YOUR SENATORS DECISION: {senatorDecision}</p>
-          <p>HOVER FOR MORE INFO</p>
+          <p><span id="billInfo">TITLE</span>: {title}</p>
+          <p>----------------------------</p>
+          <p><span id="billInfo">YOUR SENATORS DECISION</span>: {senatorDecision}</p>
           <div className="hover-box">
-            <p>SUMMARY: {summary}</p>
-            <p>FURTHER DETAILS: <a href={"https://www.nysenate.gov/legislation/bills/" + session + "/" + billId}>bill webpage</a> | <a href={"http://legislation.nysenate.gov/api/3/bills/" + session + "/" + billId + ".pdf"}>bill pdf</a></p>
-            <p>YAY: {yay}</p>
-            <p>NAY: {nay}</p>
-            <p>STATUS: {status}</p>
-            <p>ACTION DATE: {date}</p>
+            <p><span id="billInfo">STATUS</span>: {status}</p>
+            <p><span id="billInfo">ACTION DATE</span>: {date}</p>
+            <p><span id="billInfo">YAY</span>: {yay} <span id="billInfo">NAY</span>: {nay}</p>
+            <br></br>
             <p id={othaOthaSupaKey} ref="holder"><canvas ref="chart" id={realKey}></canvas></p>
+            <br></br>
+            <p><a href={"https://www.nysenate.gov/legislation/bills/" + session + "/" + billId}>bill webpage</a> | <a href={"http://legislation.nysenate.gov/api/3/bills/" + session + "/" + billId + ".pdf"}>bill pdf</a></p>
           </div>
         </div>
       </li>
