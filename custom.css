@@ -82,6 +82,14 @@
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
 }
 
+#repInfoUL li {
+  padding-left: 12px;
+}
+
+#senatorLink {
+  margin-top: 10px;
+}
+
 #landingPageBG {
   background: url(nycSkyline.jpg);
   /*background-repeat: no-repeat;*/
@@ -128,10 +136,11 @@
 }
 
 #rep-info {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 #rep-info li {
   font-size: 20px;
   list-style-type: none;
 }
+
