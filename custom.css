@@ -104,6 +104,7 @@
 
 #senatorLink {
   margin-top: 10px;
+  text-decoration: underline;
 }
 
 #senatorLink a:hover {
