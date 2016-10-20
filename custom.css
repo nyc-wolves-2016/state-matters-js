@@ -203,4 +203,11 @@
   list-style-type: none;
 }
 
+#title {
+  margin-bottom: 3px;
+}
+
+#decision {
+  margin-top: 3px;
+}
 

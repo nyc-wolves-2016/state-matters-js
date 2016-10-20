@@ -149,13 +149,12 @@ class Bill extends React.Component {
     return(
       <li id={othaSupaKey}>
         <div className="big-box">
-          <p><span id="billInfo">TITLE</span>: {title}</p>
-          <p>----------------------------</p>
-          <p><span id="billInfo">YOUR SENATOR'S DECISION</span>: {senatorDecision}</p>
+          <p id="title">"{title}"</p>
+          <hr/>
+          <p id ="decision"><span id="billInfo">YOUR SENATOR'S DECISION</span>: {senatorDecision}</p>
+          <p><span id="billInfo">STATUS</span>: {status}</p>
           <div className="hover-box">
-            <p><span id="billInfo">STATUS</span>: {status}</p>
             <p><span id="billInfo">ACTION DATE</span>: {date}</p>
-            <p><span id="billInfo">YAY</span>: {yay} <span id="billInfo">NAY</span>: {nay}</p>
             <br></br>
             <p id={othaOthaSupaKey} ref="holder"><canvas ref="chart" id={realKey}></canvas></p>
             <br></br>
