@@ -313,7 +313,6 @@ class App extends React.Component {
     event.preventDefault();
     var searchTerm = this.refs.keywordBox.value;
     var keywordSearchBills = this.state.bills[this.state.year.billYear].filter(bill => bill.summary.includes(searchTerm));
-
     this.setState({
       currentBills: keywordSearchBills,
       showKeywordSearchForm: false
