@@ -17,6 +17,11 @@ class Timeline extends React.Component {
   componentDidUpdate() {
     setupListeners();
     $.fn.fullpage.reBuild();
+
+    // debugger;
+    // if (this.props.closeVoteClicked) {
+    //
+    // }
   }
 
   render() {
