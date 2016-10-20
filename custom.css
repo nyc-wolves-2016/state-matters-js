@@ -6,10 +6,7 @@
   margin-bottom: 530px;
 }
 
-#supaButton {
-  text-transform: none;
-  margin-left: 37%;
-}
+
 
 #rep-info * {
   background-color: inherit;
@@ -61,13 +58,13 @@
 #year-search {
   margin-top: 0px;
   padding: 0 0.75rem
-  background-color: #26a69a;
+  background-color: #c1640a;
   height: 36px;
   z-index: 1;
 }
 
 #year-search select {
-  background-color: #26a69a;
+  background-color: #c1640a;
   border: none;
   height: 36px;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
@@ -90,14 +87,27 @@
   margin-top: 10px;
 }
 
+#senatorLink a:hover {
+  color: white;
+}
+
 #landingPageBG {
-  background: url(nycSkyline.jpg);
+  /*background: url(nycSkyline.jpg);*/
   /*background-repeat: no-repeat;*/
   background-size: cover;
 }
 
 #page2BG {
-  background-color: #D3D3D3;
+  /*background: url(nycSkyline.jpg);*/
+  /*background-size: cover;*/
+
+  /*background-color: #D3D3D3;*/
+}
+
+.section {
+  background: url(nycSkyline.jpg);
+  background-size: cover;
+
 }
 
 #senatorLink a{
@@ -105,27 +115,56 @@
 }
 
 #timeline-ul .big-box {
-  background-color: #26a69a;
+  background-color: #4484CE;
   border-radius: 5px;
 }
 
 #main-form input {
   color: black;
+  border-bottom: 1px solid #4484CE;
+}
+
+#main-form label {
+  color: #4484CE;
+}
+
+#main-form input:focus {
+  box-shadow: 0 1px 0 0 #4484CE;
+}
+
+#main-form input:valid {
+  box-shadow: 0 1px 0 0 #4484CE;
+}
+
+#supaButton {
+  text-transform: none;
+  margin-left: 37%;
+  background-color: #4484CE;
+  border-radius: 5px;
+}
+
+#main-form input, #main-form label {
+  font-size: 1.4rem;
 }
 
 #timeline-filterables {
   margin-top: 35px;
 }
 
+#timeline-filterables a, #timeline-filterables select {
+  background-color: #4484CE;
+  border-radius: 5px;
+}
+
 #timeline-filterables .clickedOn {
-  background-color: #8ec4bf;
+  background-color: #709bce;
 }
 
 #main-font {
   position: fixed;
   color: white;
   bottom: 100px;
-  left: 50px;
+  left: 100px;
   /*top: 800px;
   left: 60px;*/
 }

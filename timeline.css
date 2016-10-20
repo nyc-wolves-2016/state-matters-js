@@ -16,7 +16,7 @@ body {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 .intro {
-  background-color: rgba(47,101,115,0.67);
+  background-color: rgba(104, 104, 106, 0.58);
   height: 235px;
 }
 
@@ -41,17 +41,18 @@ h1 {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 .timeline ul {
-  background: #D3D3D3;
+  /*background: #D3D3D3;*/
   padding-bottom: 500px;
 }
 
+/*timeline itself*/
 .timeline ul li {
   list-style-type: none;
   position: relative;
   width: 6px;
   margin: 0 auto;
   padding-top: 50px;
-  background: #26a69a;
+  background: white;
 }
 
 .timeline ul li::after {
@@ -66,6 +67,7 @@ h1 {
   background: inherit;
 }
 
+/**/
 .timeline ul li .big-box {
   position: relative;
   bottom: 0;
@@ -89,20 +91,22 @@ h1 {
   left: 45px;
 }
 
+/*triangles on the right side li's*/
 .timeline ul li:nth-child(odd) .big-box::before {
   left: -15px;
   border-width: 8px 16px 8px 0;
-  border-color: transparent #26a69a transparent transparent;
+  border-color: transparent #4484CE transparent transparent;
 }
 
 .timeline ul li:nth-child(even) .big-box {
   left: -439px;
 }
 
+/*triangles on the left side li's*/
 .timeline ul li:nth-child(even) .big-box::before {
   right: -15px;
   border-width: 8px 0 8px 16px;
-  border-color: transparent transparent transparent #26a69a;
+  border-color: transparent transparent transparent #4484CE;
 }
 
 time {
@@ -120,8 +124,9 @@ time {
   transition: background .5s ease-in-out;
 }
 
+/*nodes*/
 .timeline ul li.in-view::after {
-  background: #26a69a;
+  background: white;
 }
 
 .timeline ul li .big-box {
@@ -171,7 +176,7 @@ time {
   .timeline ul li:nth-child(even) .big-box::before {
     left: -15px;
     border-width: 8px 16px 8px 0;
-    border-color: transparent #F45B69 transparent transparent;
+    border-color: transparent #4484CE transparent transparent;
   }
 }
 
@@ -181,6 +186,14 @@ time {
 
 .hover-box {
   display: none;
+}
+
+.hover-box a {
+  color: white;
+}
+
+.hover-box a:hover {
+  color: black;
 }
 
 .timeline ul li .big-box:hover {
