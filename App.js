@@ -69,7 +69,7 @@ class App extends React.Component {
     //   foundRep = $.parseJSON(foundRep.slice(41, -2));
     //   debugger;
     //   foundRep = foundRep.rows[0];
-         foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
+      var foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
       var senatorFirstLast = foundRep[1].split(" ");
       var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
       var repObj = {
@@ -127,7 +127,7 @@ class App extends React.Component {
 
     var district = this.state.senatorInfo.district;
     $.ajax({
-      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=RPQrYAiTpPHZZAyUnSXnLC29YM6e1h9r=true",
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
       method: "GET"
     })
     .done(function(response) {
@@ -166,7 +166,7 @@ class App extends React.Component {
 
   getBillTotal() {
     $.ajax({
-      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
       method: "GET"
     })
     .done(function(response) {
@@ -176,9 +176,9 @@ class App extends React.Component {
       var sessionYear = parseInt(this.state.year.sessionYear)
       for (var i = 1; i < Math.ceil(billTotal/100); i+=1) {
         let offset = i * 100
-        if ( i === 1) { allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
+        if ( i === 1) { allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
       } else {
-        allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
+        allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
         }
       }
       let test = []
@@ -263,7 +263,7 @@ class App extends React.Component {
           //   vbillId: "1234"
           // }
 
-          ]
+          // ]
 
           this.setState({showLoading: false, showForm: true});
           this.setState({
