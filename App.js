@@ -26,13 +26,7 @@ class App extends React.Component {
     this.senatorChange = this.senatorChange.bind(this);
     this.state = {
       // senatorInfo: {},
-      senatorInfo: {
-        district: 41,
-        fullName: "Susan J. Serino",
-        firstLast: "Susan Serino",
-        web: "sue_serino.com",
-        population: 333333
-      },
+      senatorInfo: {},
       bills: {},
       currentBills: [],
       year: { billYear: '2016', sessionYear: '2015' },
