@@ -69,17 +69,18 @@ class App extends React.Component {
     //   foundRep = $.parseJSON(foundRep.slice(41, -2));
     //   debugger;
     //   foundRep = foundRep.rows[0];
-    //   var senatorFirstLast = foundRep[1].split(" ");
-    //   var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
-    //   var repObj = {
-    //     district: foundRep[0],
-    //     fullName: foundRep[1],
-    //     firstLast: senatorFirstLast,
-    //     web: foundRep[2],
-    //     population: foundRep[3]
-    // };
-    //   foundRep.push(senatorFirstLast);
-    //   this.setState({senatorInfo: repObj});
+         foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
+      var senatorFirstLast = foundRep[1].split(" ");
+      var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+      var repObj = {
+        district: foundRep[0],
+        fullName: foundRep[1],
+        firstLast: senatorFirstLast,
+        web: foundRep[2],
+        population: foundRep[3]
+    };
+      foundRep.push(senatorFirstLast);
+      this.setState({senatorInfo: repObj});
       // save district to its own state
       // retrieve later when non-default year is specified
 
@@ -164,104 +165,103 @@ class App extends React.Component {
   }
 
   getBillTotal() {
-    //   debugger;
-    // $.ajax({
-    //   url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
-    //   method: "GET"
-    // })
-    // .done(function(response) {
-    //   var billTotal = response.total;
-    //   var allBillz = [];
-    //   var billYear = parseInt(this.state.year.billYear);
-    //   var sessionYear = parseInt(this.state.year.sessionYear)
-    //   for (var i = 1; i < Math.ceil(billTotal/100); i+=1) {
-    //     let offset = i * 100
-    //     if ( i === 1) { allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
-    //   } else {
-    //     allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
-    //     }
-    //   }
-    //   let test = []
-    //   Promise.all(allBillz).then(billGlobs => {
-    //     var allCleanBills = [];
-    //     billGlobs.forEach(billGlob => {
-    //       var allBills = billGlob.result.items;
-    //
-    //       var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
-    //       var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
-    //
-    //       var yays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE);
-    //       var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
-    //
-    //       var senatorVotes = allBills.map(bill => {
-    //         if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
-    //         else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
-    //         else { return "n/a" }
-    //       })
-    //
-    //       var billSponsors = allBills.map(bill => {
-    //         if (bill.result.sponsor.member !== null) { return bill.result.sponsor.member.fullName }
-    //         else { return "n/a" }
-    //       })
+    $.ajax({
+      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+      method: "GET"
+    })
+    .done(function(response) {
+      var billTotal = response.total;
+      var allBillz = [];
+      var billYear = parseInt(this.state.year.billYear);
+      var sessionYear = parseInt(this.state.year.sessionYear)
+      for (var i = 1; i < Math.ceil(billTotal/100); i+=1) {
+        let offset = i * 100
+        if ( i === 1) { allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
+      } else {
+        allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
+        }
+      }
+      let test = []
+      Promise.all(allBillz).then(billGlobs => {
+        var allCleanBills = [];
+        billGlobs.forEach(billGlob => {
+          var allBills = billGlob.result.items;
+    
+          var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
+          var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
+    
+          var yays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE);
+          var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
+    
+          var senatorVotes = allBills.map(bill => {
+            if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
+            else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
+            else { return "n/a" }
+          })
+    
+          var billSponsors = allBills.map(bill => {
+            if (bill.result.sponsor.member !== null) { return bill.result.sponsor.member.fullName }
+            else { return "n/a" }
+          })
 
-          // var cleanBills = allBills.map((bill, i) => {
-            // return {
-            //         title: bill.result.title,
-            //         year: bill.result.year,
-            //         yay: yaysArray[i].size,
-            //         nay: naysArray[i].size,
-            //         senatorDecision: senatorVotes[i],
-            //         summary: bill.result.summary.slice(0, (bill.result.title.length * 2)) + "...",
-            //         status: bill.result.status.statusDesc,
-            //         date: bill.result.status.actionDate,
-            //         sponsor: billSponsors[i],
-            //         session: bill.result.session,
-            //         billId: bill.result.printNo
-            //       }
-            //    });
-          // allCleanBills =[...allCleanBills, ...cleanBills]
-        // })
-          // var closeVoteBills = allCleanBills.filter(bill => (Math.abs(bill.yay - bill.nay) < 20) && (bill.yay + bill.nay > 30))
+          var cleanBills = allBills.map((bill, i) => {
+            return {
+                    title: bill.result.title,
+                    year: bill.result.year,
+                    yay: yaysArray[i].size,
+                    nay: naysArray[i].size,
+                    senatorDecision: senatorVotes[i],
+                    summary: bill.result.summary.slice(0, (bill.result.title.length * 2)) + "...",
+                    status: bill.result.status.statusDesc,
+                    date: bill.result.status.actionDate,
+                    sponsor: billSponsors[i],
+                    session: bill.result.session,
+                    billId: bill.result.printNo
+                  }
+               });
+          allCleanBills =[...allCleanBills, ...cleanBills]
+        })
+          var closeVoteBills = allCleanBills.filter(bill => (Math.abs(bill.yay - bill.nay) < 20) && (bill.yay + bill.nay > 30))
 
-          var closeVoteBills = [{
-            title: "title 1",
-            year: 2016,
-            yay: 30,
-            nay: 20,
-            senatorDecision: 'YAY',
-            summary: "summary 1",
-            status: "signed",
-            date: "11-11-2016",
-            sponsor: "this guy",
-            session: 2015,
-            vbillId: "1234"
-          },
-          {
-            title: "title 2",
-            year: 2016,
-            yay: 30,
-            nay: 20,
-            senatorDecision: 'YAY',
-            summary: "summary 2",
-            status: "signed",
-            date: "11-11-2016",
-            sponsor: "this guy",
-            session: 2015,
-            vbillId: "1234"
-          },
-          {
-            title: "title 3",
-            year: 2016,
-            yay: 30,
-            nay: 20,
-            senatorDecision: 'YAY',
-            summary: "summary 3",
-            status: "signed",
-            date: "11-11-2016",
-            sponsor: "this guy",
-            session: 2015,
-            vbillId: "1234"
-          }
+          // var closeVoteBills = [{
+          //   title: "title 1",
+          //   year: 2016,
+          //   yay: 30,
+          //   nay: 20,
+          //   senatorDecision: 'YAY',
+          //   summary: "summary 1",
+          //   status: "signed",
+          //   date: "11-11-2016",
+          //   sponsor: "this guy",
+          //   session: 2015,
+          //   vbillId: "1234"
+          // },
+          // {
+          //   title: "title 2",
+          //   year: 2016,
+          //   yay: 30,
+          //   nay: 20,
+          //   senatorDecision: 'YAY',
+          //   summary: "summary 2",
+          //   status: "signed",
+          //   date: "11-11-2016",
+          //   sponsor: "this guy",
+          //   session: 2015,
+          //   vbillId: "1234"
+          // },
+          // {
+          //   title: "title 3",
+          //   year: 2016,
+          //   yay: 30,
+          //   nay: 20,
+          //   senatorDecision: 'YAY',
+          //   summary: "summary 3",
+          //   status: "signed",
+          //   date: "11-11-2016",
+          //   sponsor: "this guy",
+          //   session: 2015,
+          //   vbillId: "1234"
+          // }
 
           ]
 
@@ -270,15 +270,14 @@ class App extends React.Component {
             currentBills: closeVoteBills
           })
           var billsStateVar = this.state.bills;
-          // billsStateVar[this.state.year.billYear] = allCleanBills;
-          billsStateVar[this.state.year.billYear] = closeVoteBills;
+          billsStateVar[this.state.year.billYear] = allCleanBills;
+          // billsStateVar[this.state.year.billYear] = closeVoteBills;
           $.fn.fullpage.moveSlideRight();
           this.setState({
             bills: billsStateVar
           });
-      // })
-      // $.when.apply($, all);?
-    // }.bind(this))
+      })
+    }.bind(this))
   }
 
 
