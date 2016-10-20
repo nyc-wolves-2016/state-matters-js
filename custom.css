@@ -87,14 +87,27 @@
   margin-top: 10px;
 }
 
+#senatorLink a:hover {
+  color: white;
+}
+
 #landingPageBG {
-  background: url(nycSkyline.jpg);
+  /*background: url(nycSkyline.jpg);*/
   /*background-repeat: no-repeat;*/
   background-size: cover;
 }
 
 #page2BG {
-  background-color: #D3D3D3;
+  /*background: url(nycSkyline.jpg);*/
+  /*background-size: cover;*/
+
+  /*background-color: #D3D3D3;*/
+}
+
+.section {
+  background: url(nycSkyline.jpg);
+  background-size: cover;
+
 }
 
 #senatorLink a{
@@ -102,7 +115,7 @@
 }
 
 #timeline-ul .big-box {
-  background-color: #26a69a;
+  background-color: #4484CE;
   border-radius: 5px;
 }
 
@@ -116,6 +129,10 @@
 }
 
 #main-form input:focus {
+  box-shadow: 0 1px 0 0 #4484CE;
+}
+
+#main-form input:valid {
   box-shadow: 0 1px 0 0 #4484CE;
 }
 
@@ -134,8 +151,13 @@
   margin-top: 35px;
 }
 
+#timeline-filterables a, #timeline-filterables select {
+  background-color: #4484CE;
+  border-radius: 5px;
+}
+
 #timeline-filterables .clickedOn {
-  background-color: #8ec4bf;
+  background-color: #709bce;
 }
 
 #main-font {
