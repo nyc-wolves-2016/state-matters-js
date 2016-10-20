@@ -151,18 +151,20 @@ class App extends React.Component {
   }
 
   yearChange(event){
+    if (this.state.senatorInfo.fullName) {
+      var chosenYear = event.target.value;
+      var chosenBillYear = parseInt(chosenYear);
 
-    var chosenYear = event.target.value;
-    var chosenBillYear = parseInt(chosenYear);
+      if (chosenBillYear % 2 === 0) { var chosenSessionYear = chosenBillYear - 1 }
+      else { var chosenSessionYear = chosenBillYear }
 
-    if (chosenBillYear % 2 === 0) { var chosenSessionYear = chosenBillYear - 1 }
-    else { var chosenSessionYear = chosenBillYear }
+      this.setState({
+        year: { billYear: chosenBillYear, sessionYear: chosenSessionYear}, closeVoteClicked: false, sponsoredClicked: false, yearClicked: true, keywordClicked: false
+      });
 
-    this.setState({
-      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear}, closeVoteClicked: false, sponsoredClicked: false, yearClicked: true, keywordClicked: false
-    });
-
-    this.senatorChange(chosenBillYear, chosenSessionYear)
+      this.senatorChange(chosenBillYear, chosenSessionYear)
+    }
+    else { return null }
   }
 
   getBillTotal() {
@@ -289,27 +291,33 @@ class App extends React.Component {
   }
 
   closeBillsClicked() {
-    var closeVoteBills = this.state.bills[this.state.year.billYear].filter(bill => (Math.abs(bill.yay - bill.nay) < 20) && (bill.yay + bill.nay > 30));
+    if (this.state.senatorInfo.fullName) {
+      var closeVoteBills = this.state.bills[this.state.year.billYear].filter(bill => (Math.abs(bill.yay - bill.nay) < 20) && (bill.yay + bill.nay > 30));
 
-    this.setState({
-      currentBills: closeVoteBills,
-      closeVoteClicked: true,
-      yearClicked: false,
-      sponsoredClicked: false,
-      keywordClicked: false
-    })
+      this.setState({
+        currentBills: closeVoteBills,
+        closeVoteClicked: true,
+        yearClicked: false,
+        sponsoredClicked: false,
+        keywordClicked: false
+      })
+    }
+    else { return null }
   }
 
   sponsoredClicked() {
-    var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
+    if (this.state.senatorInfo.fullName) {
+      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
 
-    this.setState({
-      currentBills: senatorSponsoredBills,
-      sponsoredClicked: true,
-      closeVoteClicked: false,
-      yearClicked: false,
-      keywordClicked: false
-    })
+      this.setState({
+        currentBills: senatorSponsoredBills,
+        sponsoredClicked: true,
+        closeVoteClicked: false,
+        yearClicked: false,
+        keywordClicked: false
+      })
+    }
+    else { return null }
   }
 
   keywordSearch(event) {
@@ -322,9 +330,12 @@ class App extends React.Component {
     })
   }
 
-   showKeywordForm() {
-        this.setState({showKeywordSearchForm: true, keywordClicked: true, closeVoteClicked: false, sponsoredClicked: false, yearClicked: false})
+  showKeywordForm() {
+    if (this.state.senatorInfo.fullName) {
+      this.setState({showKeywordSearchForm: true, keywordClicked: true, closeVoteClicked: false, sponsoredClicked: false, yearClicked: false})
     }
+    else { return null }
+  }
 
     render() {
         if (this.state.closeVoteClicked) {
