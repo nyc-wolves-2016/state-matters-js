@@ -60,6 +60,7 @@ class App extends React.Component {
     .done(function(response) {
       var foundRep = response;
       foundRep = $.parseJSON(foundRep.slice(41, -2));
+      debugger;
       foundRep = foundRep.rows[0];
       var senatorFirstLast = foundRep[1].split(" ");
       var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
@@ -69,12 +70,11 @@ class App extends React.Component {
         firstLast: senatorFirstLast,
         web: foundRep[2],
         population: foundRep[3]
-      }
+    };
       foundRep.push(senatorFirstLast);
       this.setState({senatorInfo: repObj});
       // save district to its own state
       // retrieve later when non-default year is specified
-
 
       this.getBillTotal();
 
@@ -157,6 +157,7 @@ class App extends React.Component {
   }
 
   getBillTotal() {
+      debugger;
     $.ajax({
       url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
       method: "GET"
@@ -233,7 +234,7 @@ class App extends React.Component {
 
 
   componentDidMount(){
-    $('#fullpage').fullpage({scrollOverflow: true, autoScrolling: false, fitToSection: false})
+    $('#fullpage').fullpage({scrollOverflow: false, autoScrolling: false, fitToSection: false})
   }
 
   closeBillsClicked() {
@@ -332,7 +333,7 @@ class App extends React.Component {
         <div className="section">
           <div id="landingPageBG" className="slide">
             <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
-            { this.state.showLoading ? <Loading /> : null }
+            {/* { this.state.showLoading ? <Loading /> : null } */}
             <h1 id="main-font">STATE MATTERS</h1>
           </div>
           <div id="page2BG" className="slide">
