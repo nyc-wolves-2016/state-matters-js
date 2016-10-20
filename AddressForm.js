@@ -51,7 +51,7 @@ class AddressForm extends React.Component {
                   </div>
                 </div>
 
-                <button id="supaButton" className="btn waves-effect waves-light" type="submit" name="action">Find My Reps
+                <button id="supaButton" className="btn waves-effect waves-light" type="submit" name="action">Find My State Senator
                     <i className="material-icons right">send</i>
                 </button>
 

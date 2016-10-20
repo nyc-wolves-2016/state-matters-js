@@ -6,10 +6,7 @@
   margin-bottom: 530px;
 }
 
-#supaButton {
-  text-transform: none;
-  margin-left: 37%;
-}
+
 
 #rep-info * {
   background-color: inherit;
@@ -61,13 +58,13 @@
 #year-search {
   margin-top: 0px;
   padding: 0 0.75rem
-  background-color: #26a69a;
+  background-color: #c1640a;
   height: 36px;
   z-index: 1;
 }
 
 #year-search select {
-  background-color: #26a69a;
+  background-color: #c1640a;
   border: none;
   height: 36px;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
@@ -111,6 +108,26 @@
 
 #main-form input {
   color: black;
+  border-bottom: 1px solid #4484CE;
+}
+
+#main-form label {
+  color: #4484CE;
+}
+
+#main-form input:focus {
+  box-shadow: 0 1px 0 0 #4484CE;
+}
+
+#supaButton {
+  text-transform: none;
+  margin-left: 37%;
+  background-color: #4484CE;
+  border-radius: 5px;
+}
+
+#main-form input, #main-form label {
+  font-size: 1.4rem;
 }
 
 #timeline-filterables {
