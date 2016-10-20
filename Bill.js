@@ -157,7 +157,7 @@ class Bill extends React.Component {
             <br></br>
             <p id={othaOthaSupaKey} ref="holder"><canvas ref="chart" id={realKey}></canvas></p>
             <br></br>
-            <p><a target="_blank" href={"https://www.nysenate.gov/legislation/bills/" + session + "/" + billId}>bill webpage</a> | <a target="_blank" href={"http://legislation.nysenate.gov/api/3/bills/" + session + "/" + billId + ".pdf"}>bill pdf</a></p>
+            <p><a target="_blank" href={"https://www.nysenate.gov/legislation/bills/" + session + "/" + billId}>bill webpage</a> | <a target="_blank" href={"http://legislation.nysenate.gov/api/3/bills/" + session + "/" + billId + ".pdf/?key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y"}>bill pdf</a></p>
           </div>
         </div>
       </li>
