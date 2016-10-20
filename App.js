@@ -41,7 +41,8 @@ class App extends React.Component {
       showKeywordSearchForm: false,
       closeVoteClicked: true,
       sponsoredClicked: false,
-      yearClicked: false
+      yearClicked: false,
+      keywordClicked: false
     }
   }
 
@@ -158,7 +159,7 @@ class App extends React.Component {
     else { var chosenSessionYear = chosenBillYear }
 
     this.setState({
-      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear}, closeVoteClicked: false, sponsoredClicked: false, yearClicked: true
+      year: { billYear: chosenBillYear, sessionYear: chosenSessionYear}, closeVoteClicked: false, sponsoredClicked: false, yearClicked: true, keywordClicked: false
     });
 
     this.senatorChange(chosenBillYear, chosenSessionYear)
@@ -186,19 +187,19 @@ class App extends React.Component {
         var allCleanBills = [];
         billGlobs.forEach(billGlob => {
           var allBills = billGlob.result.items;
-    
+
           var nays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY);
           var naysArray = nays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
-    
+
           var yays = allBills.map(bill => bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE);
           var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
-    
+
           var senatorVotes = allBills.map(bill => {
             if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
             else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
             else { return "n/a" }
           })
-    
+
           var billSponsors = allBills.map(bill => {
             if (bill.result.sponsor.member !== null) { return bill.result.sponsor.member.fullName }
             else { return "n/a" }
@@ -294,7 +295,8 @@ class App extends React.Component {
       currentBills: closeVoteBills,
       closeVoteClicked: true,
       yearClicked: false,
-      sponsoredClicked: false
+      sponsoredClicked: false,
+      keywordClicked: false
     })
   }
 
@@ -305,7 +307,8 @@ class App extends React.Component {
       currentBills: senatorSponsoredBills,
       sponsoredClicked: true,
       closeVoteClicked: false,
-      yearClicked: false
+      yearClicked: false,
+      keywordClicked: false
     })
   }
 
@@ -320,7 +323,7 @@ class App extends React.Component {
   }
 
    showKeywordForm() {
-        this.setState({showKeywordSearchForm: true})
+        this.setState({showKeywordSearchForm: true, keywordClicked: true, closeVoteClicked: false, sponsoredClicked: false, yearClicked: false})
     }
 
     render() {
@@ -342,6 +345,12 @@ class App extends React.Component {
             var yearClickedClass = "";
         }
 
+        if (this.state.keywordClicked) {
+            var keywordClickedClass = " clickedOn";
+        } else {
+            var keywordClickedClass = "";
+        }
+
       if (this.state.showKeywordSearchForm) {
             var timelineFilters = <div className='row' id='keywordDiv'><form className='keyword-search' id='keyword-search-form' type='button' onSubmit={this.keywordSearch}><div className='keyword-search-box input-field col s9'><label htmlFor='keywordBox'>Search for bills by keyword</label><input ref='keywordBox' name='keywordBox' id='keywordBox' type='text'/></div><div className='col s3 waves-effect waves-light btn' id='supaDupaButton'><input type='submit' value='search'/></div></form></div>
       } else {
@@ -356,7 +365,7 @@ class App extends React.Component {
                 </li>
 
                 <li className="col s3">
-                    <a className="waves-effect waves-light btn" onClick={this.showKeywordForm}>Keyword Search</a>
+                    <a className={"waves-effect waves-light btn"+keywordClickedClass} onClick={this.showKeywordForm}>Keyword Search</a>
                 </li>
 
                 <li id="year-search" className="input-field col s3">
