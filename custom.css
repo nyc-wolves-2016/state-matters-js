@@ -45,9 +45,9 @@
   margin-top: 30px;
 }
 
-#timeline-filterables {
+/*#timeline-filterables {
   padding-top: 25px;
-}
+}*/
 
 #rep-info {
   padding-top: 3px;
@@ -55,7 +55,7 @@
 }
 
 #timeline-title {
-  padding-top: 15px;
+  /*padding-top: 15px;*/
 }
 
 #year-search {
@@ -105,6 +105,10 @@
   color: black;
 }
 
+#timeline-filterables {
+  margin-top: 35px;
+}
+
 #timeline-filterables .clickedOn {
   background-color: #8ec4bf;
 }
@@ -121,4 +125,13 @@
 #billInfo {
   font-style: italic;
   font-weight: bold;
+}
+
+#rep-info {
+  margin-bottom: 50px;
+}
+
+#rep-info li {
+  font-size: 20px;
+  list-style-type: none;
 }
