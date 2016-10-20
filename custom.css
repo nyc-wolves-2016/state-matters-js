@@ -38,8 +38,27 @@
   width: 80%;
 }
 
+#keyword-search-form input {
+  color: black;
+  border-bottom: 1px solid #4484CE;
+}
+
+#keyword-search-form label {
+  color: black;
+}
+
+#keyword-search-form input:focus {
+  box-shadow: 0 1px 0 0 #4484CE;
+}
+
+#keyword-search-form input:valid {
+  box-shadow: 0 1px 0 0 #4484CE;
+}
+
 #supaDupaButton {
   margin-top: 30px;
+  background-color: #4484CE;
+  border-radius: 5px;
 }
 
 /*#timeline-filterables {
@@ -85,6 +104,7 @@
 
 #senatorLink {
   margin-top: 10px;
+  text-decoration: underline;
 }
 
 #senatorLink a:hover {
@@ -183,3 +203,10 @@
   list-style-type: none;
 }
 
+#title {
+  margin-bottom: 3px;
+}
+
+#decision {
+  margin-top: 3px;
+}

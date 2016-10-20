@@ -21,7 +21,6 @@ class AddressForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    if (this.props.senatorInfo) {
       if (this.refs.address.value.length > 0 && this.refs.city.value.length > 0) {
         var fullAddress = this.refs.address.value + ' ' + this.refs.city.value + ' ' + this.refs.zip.value
         this.refs.address.value = ''
@@ -31,8 +30,6 @@ class AddressForm extends React.Component {
       }
       else { return null }
     }
-    else { return null }
-  }
 
   render() {
     return(

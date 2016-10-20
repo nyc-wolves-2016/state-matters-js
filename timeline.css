@@ -189,11 +189,11 @@ time {
 }
 
 .hover-box a {
-  color: white;
+  color: black;
 }
 
 .hover-box a:hover {
-  color: black;
+  color: white;
 }
 
 .timeline ul li .big-box:hover {
