@@ -19,31 +19,31 @@ class Bill extends React.Component {
 
     let {year, title, yay, nay, repDecision, summary} = this.props.data
 
-    // Chart.defaults.global.defaultFontColor = "white";
+    Chart.defaults.global.defaultFontColor = "white";
 
-    // var data = {
-    //   labels: [
-    //     "Yay",
-    //     "Nay"
-    //   ],
-    //   datasets: [
-    //     {
-    //       data: [yay, nay],
-    //       backgroundColor: [
-    //         "white",
-    //         "black"
-    //       ],
-    //       hoverBackgroundColor: [
-    //         "#FF6384",
-    //         "#36A2EB"
-    //       ]
-    //     }
-    //   ]
-    // };
-    // let pieChart = new Chart(this.refs.chart, {
-    //   type: "pie",
-    //   data: data
-    // });
+    var data = {
+      labels: [
+        "Yay",
+        "Nay"
+      ],
+      datasets: [
+        {
+          data: [yay, nay],
+          backgroundColor: [
+            "#D3D3D3",
+            "#2a2a2a"
+          ],
+          hoverBackgroundColor: [
+            "#FF6384",
+            "#36A2EB"
+          ]
+        }
+      ]
+    };
+    let pieChart = new Chart(this.refs.chart, {
+      type: "pie",
+      data: data
+    });
   }
 
   shouldComponentUpdate(newProps) {
@@ -84,8 +84,8 @@ class Bill extends React.Component {
         {
           data: [yay, nay],
           backgroundColor: [
-            "white",
-            "black"
+            "#D3D3D3",
+            "#2a2a2a"
           ]
         }
       ]
