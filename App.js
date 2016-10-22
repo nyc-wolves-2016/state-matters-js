@@ -3,6 +3,7 @@ import AddressForm from './AddressForm.js';
 import RepInfoDisplay from './RepInfoDisplay';
 import Timeline from './Timeline';
 import Bill from './Bill';
+import jquery from "jquery";
 import $ from "jquery";
 import setupListeners from './timeline_fcns';
 import {IScroll} from 'fullpage.js';
@@ -79,7 +80,6 @@ class App extends React.Component {
       this.setState({senatorInfo: repObj});
       // save district to its own state
       // retrieve later when non-default year is specified
-
       this.getBillTotal();
 
 
