@@ -15,10 +15,11 @@ import jQueryify from './custom_jquery.js';
 class App extends React.Component {
   constructor() {
     super();
-    this.geocodeIt = this.geocodeIt.bind(this);
+    // this.geocodeIt = this.geocodeIt.bind(this);
     this.compare = this.compare.bind(this);
     // this.getBills = this.getBills.bind(this);
     this.getBillTotal = this.getBillTotal.bind(this);
+    this.getSenator = this.getSenator.bind(this);
     this.closeBillsClicked = this.closeBillsClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
@@ -43,50 +44,98 @@ class App extends React.Component {
     }
   }
 
-  geocodeIt(fullAddress){
-    this.setState({showLoading: true, showForm: false, showLoadingLine: true})
+  // geocodeIt(fullAddress){
+  //   this.setState({showLoading: true, showForm: false, showLoadingLine: true})
+  //   $.ajax({
+  //     url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
+  //   })
+  //   .done(response => {
+  //     var lat = response.results[0].geometry.location.lat
+  //     var lng = response.results[0].geometry.location.lng
+  //     this.getSenator(lat + '%2C%20' + lng )
+  //     // this.getAssembly(lat + '%2C%20' + lng )
+  //     // this.getCongress(lat + '%2C%20' + lng )
+  //   })
+  // }
+
+  getSenator(fullAddress){
     $.ajax({
-      url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
+      url:"https://www.nysenate.gov/find-my-senator?search=true&addr1=" + fullAddress,
+      method: "get",
+      dataType: "text"
     })
     .done(response => {
-      var lat = response.results[0].geometry.location.lat
-      var lng = response.results[0].geometry.location.lng
-      this.getSenator(lat + '%2C%20' + lng )
-      // this.getAssembly(lat + '%2C%20' + lng )
-      // this.getCongress(lat + '%2C%20' + lng )
-    })
-  }
+      var doc = $.parseHTML(response)
+      var name = $(doc).find(".c-find-my-senator--senator-link").first().text().trim();
+      var district = $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2)
+      var website = $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
 
-  getSenator(latLng) {
-    $.ajax({
-      url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201KfhMo_HSAp3kq5Yayca22HrIhEjJLa_c_s6jd2Q%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListnysen&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349224&_=1476457378113",
-      method: 'get'
-    })
-    .done(function(response) {
-      var foundRep = response;
-      foundRep = $.parseJSON(foundRep.slice(41, -2));
-      foundRep = foundRep.rows[0];
-      // var foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
-      var senatorFirstLast = foundRep[1].split(" ");
-      var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+      var senatorFirstLastSplit = name.split(" ");
+      if (senatorFirstLastSplit.length > 2) {
+        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      }
       var repObj = {
-        district: foundRep[0],
-        fullName: foundRep[1],
-        firstLast: senatorFirstLast,
-        web: foundRep[2],
-        population: foundRep[3]
-    };
-      foundRep.push(senatorFirstLast);
-      this.setState({senatorInfo: repObj});
-      // save district to its own state
-      // retrieve later when non-default year is specified
+        district: $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2),
+        fullName: name,
+        firstLast: senatorFirstLast || name,
+        short: senatorFirstLastSplit[2] || senatorFirstLastSplit[1],
+        web: $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
+      };
+      this.setState({senatorInfo: repObj})
       this.getBillTotal();
+    })
+    .fail(response => {
+      var doc = $.parseHTML(response.responseText)
+      var name = $(doc).find(".c-find-my-senator--senator-link").first().text().trim();
+      var district = $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2)
+      var website = $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
 
-
-    }.bind(this))
-    .fail(function(response) {
-    }.bind(this));
+      var senatorFirstLastSplit = name.split(" ");
+      if (senatorFirstLastSplit.length > 2) {
+        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      }
+      var repObj = {
+        district: $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2),
+        fullName: name,
+        firstLast: senatorFirstLast || name,
+        short: senatorFirstLastSplit[2] || senatorFirstLastSplit[1],
+        web: $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
+      };
+      this.setState({senatorInfo: repObj})
+      this.getBillTotal();
+    })
   }
+  // NOTE: This version of the scrape uses the board of elections fusion table
+  // getSenator(latLng) {
+  //   $.ajax({
+  //     url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201KfhMo_HSAp3kq5Yayca22HrIhEjJLa_c_s6jd2Q%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListnysen&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349224&_=1476457378113",
+  //     method: 'get'
+  //   })
+  //   .done(function(response) {
+  //     var foundRep = response;
+  //     foundRep = $.parseJSON(foundRep.slice(41, -2));
+  //     foundRep = foundRep.rows[0];
+  //     // var foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
+  //     var senatorFirstLast = foundRep[1].split(" ");
+  //     var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+  //     var repObj = {
+  //       district: foundRep[0],
+  //       fullName: foundRep[1],
+  //       firstLast: senatorFirstLast,
+  //       web: foundRep[2],
+  //       population: foundRep[3]
+  //   };
+  //     foundRep.push(senatorFirstLast);
+  //     this.setState({senatorInfo: repObj});
+  //     // save district to its own state
+  //     // retrieve later when non-default year is specified
+  //     this.getBillTotal();
+
+
+  //   }.bind(this))
+  //   .fail(function(response) {
+  //   }.bind(this));
+  // }
 
   // getAssembly(latLng) {
   //   $.ajax({
@@ -123,16 +172,22 @@ class App extends React.Component {
 
     var district = this.state.senatorInfo.district;
     $.ajax({
-      url: "legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
       method: "GET"
     })
     .done(function(response) {
 
       var senatorName = response.result.items[0].fullName;
       var districtCode = response.result.items[0].districtCode;
+      var splitName = senatorName.split(" ")
+      if (splitName.length > 2) {
+        var formattedName = splitName[0] + "-" + splitName[1][0] + "-" + splitName[2]
+      } else { var formattedName = splitName[0] + "-" + splitName[1]}
+      
 
+      if (this.state.senatorInfo.short !== splitName[1] && this.state.senatorInfo.short !== splitName[2])
       this.setState({
-        senatorInfo: { fullName: senatorName, district: districtCode }
+        senatorInfo: { fullName: senatorName, district: districtCode, web: "https://www.nysenate.gov/senators/" +  formattedName}
       })
 
       if (this.state.bills[this.state.year.billYear]) {
@@ -172,7 +227,7 @@ class App extends React.Component {
 
   getBillTotal() {
     $.ajax({
-      url: "legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
       method: "GET"
     })
     .done(function(response) {
@@ -182,9 +237,9 @@ class App extends React.Component {
       var sessionYear = parseInt(this.state.year.sessionYear)
       for (var i = 1; i < Math.ceil(billTotal/100); i+=1) {
         let offset = i * 100
-        if ( i === 1) { allBillz.push($.get("legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
+        if ( i === 1) { allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
       } else {
-        allBillz.push($.get("legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
+        allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
         }
       }
       let test = []
@@ -200,8 +255,8 @@ class App extends React.Component {
           var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
 
           var senatorVotes = allBills.map(bill => {
-            if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
-            else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
+            if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast || senator.shortName.toUpperCase() === this.state.senatorInfo.short).length > 0) { return "yay" }
+            else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast || senator.shortName === this.state.senatorInfo.short).length > 0) { return "nay" }
             else { return "n/a" }
           })
 
@@ -313,7 +368,7 @@ class App extends React.Component {
 
   sponsoredClicked() {
     if (this.state.senatorInfo.fullName) {
-      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
+      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName  || bill.sponsor.includes(this.state.senatorInfo.short));
 
       this.setState({
         currentBills: senatorSponsoredBills,
@@ -413,7 +468,7 @@ class App extends React.Component {
       <div ref="test" id="fullpage">
         <div className="section">
           <div id="landingPageBG" className="slide">
-            <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
+            <AddressForm hideIt={this.state.showForm} getAddress={this.getSenator}/> :
             {/* { this.state.showLoading ? <Loading /> : null } */}
             <h2 id="loading-line">{loadingText}</h2>
             <h1 id="main-font">STATE MATTERS</h1>
