@@ -57,36 +57,60 @@ class App extends React.Component {
     })
   }
 
-  getSenator(latLng) {
+  getSenator(fullAddress){
     $.ajax({
-      url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201KfhMo_HSAp3kq5Yayca22HrIhEjJLa_c_s6jd2Q%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListnysen&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349224&_=1476457378113",
-      method: 'get'
+      url:"https://www.nysenate.gov/find-my-senator?search=true&addr1=2+deerfield+pl&city=beacon&zip5=12508"
     })
-    .done(function(response) {
-      var foundRep = response;
-      foundRep = $.parseJSON(foundRep.slice(41, -2));
-      foundRep = foundRep.rows[0];
-      // var foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
-      var senatorFirstLast = foundRep[1].split(" ");
-      var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+    .done(response => {
+      debugger;
+      var name = $(response).find(".c-find-my-senator--senator-link").first().text().trim();
+      var district = $(response).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2)
+      var website = $(response).find(".c-find-my-senator--senator-link").first().attr("href")
+      // Move the split up here for middle name, use the last name and hten upcase for short integrate that into or calls for when people have shortened first names like sue
       var repObj = {
         district: foundRep[0],
         fullName: foundRep[1],
         firstLast: senatorFirstLast,
+        // short: 
         web: foundRep[2],
         population: foundRep[3]
     };
-      foundRep.push(senatorFirstLast);
-      this.setState({senatorInfo: repObj});
-      // save district to its own state
-      // retrieve later when non-default year is specified
-      this.getBillTotal();
-
-
-    }.bind(this))
-    .fail(function(response) {
-    }.bind(this));
+    })
+    .fail(response => {
+      debugger;
+    })
   }
+  // NOTE: This version of the scrape uses the board of elections fusion table
+  // getSenator(latLng) {
+  //   $.ajax({
+  //     url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201KfhMo_HSAp3kq5Yayca22HrIhEjJLa_c_s6jd2Q%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListnysen&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349224&_=1476457378113",
+  //     method: 'get'
+  //   })
+  //   .done(function(response) {
+  //     var foundRep = response;
+  //     foundRep = $.parseJSON(foundRep.slice(41, -2));
+  //     foundRep = foundRep.rows[0];
+  //     // var foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
+  //     var senatorFirstLast = foundRep[1].split(" ");
+  //     var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+  //     var repObj = {
+  //       district: foundRep[0],
+  //       fullName: foundRep[1],
+  //       firstLast: senatorFirstLast,
+  //       web: foundRep[2],
+  //       population: foundRep[3]
+  //   };
+  //     foundRep.push(senatorFirstLast);
+  //     this.setState({senatorInfo: repObj});
+  //     // save district to its own state
+  //     // retrieve later when non-default year is specified
+  //     this.getBillTotal();
+
+
+  //   }.bind(this))
+  //   .fail(function(response) {
+  //   }.bind(this));
+  // }
 
   // getAssembly(latLng) {
   //   $.ajax({
