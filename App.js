@@ -59,25 +59,45 @@ class App extends React.Component {
 
   getSenator(fullAddress){
     $.ajax({
-      url:"https://www.nysenate.gov/find-my-senator?search=true&addr1=2+deerfield+pl&city=beacon&zip5=12508"
+      url:"https://www.nysenate.gov/find-my-senator?search=true&addr1=2+deerfield+pl&city=beacon&zip5=12508",
+      method: "get",
+      dataType: "text"
     })
     .done(response => {
-      debugger;
-      var name = $(response).find(".c-find-my-senator--senator-link").first().text().trim();
-      var district = $(response).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2)
-      var website = $(response).find(".c-find-my-senator--senator-link").first().attr("href")
+      var doc = $.parseHTML(response)
+      var name = $(doc).find(".c-find-my-senator--senator-link").first().text().trim();
+      var district = $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2)
+      var website = $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
       // Move the split up here for middle name, use the last name and hten upcase for short integrate that into or calls for when people have shortened first names like sue
+      var senatorFirstLastSplit = name.split(" ");
+      var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
       var repObj = {
-        district: foundRep[0],
-        fullName: foundRep[1],
+        district: $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2),
+        fullName: name,
         firstLast: senatorFirstLast,
-        // short: 
-        web: foundRep[2],
-        population: foundRep[3]
-    };
+        short: senatorFirstLastSplit[2],
+       web: $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
+      };
+      this.setState({senatorInfo: repObj})
+      this.getBillTotal();
     })
     .fail(response => {
-      debugger;
+      var doc = $.parseHTML(response.responseText)
+      var name = $(doc).find(".c-find-my-senator--senator-link").first().text().trim();
+      var district = $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2)
+      var website = $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
+      // Move the split up here for middle name, use the last name and hten upcase for short integrate that into or calls for when people have shortened first names like sue
+      var senatorFirstLastSplit = name.split(" ");
+      var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      var repObj = {
+        district: $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2),
+        fullName: name,
+        firstLast: senatorFirstLast,
+        short: senatorFirstLastSplit[2],
+        web: $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
+      };
+      this.setState({senatorInfo: repObj})
+      this.getBillTotal();
     })
   }
   // NOTE: This version of the scrape uses the board of elections fusion table
@@ -147,7 +167,7 @@ class App extends React.Component {
 
     var district = this.state.senatorInfo.district;
     $.ajax({
-      url: "legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
       method: "GET"
     })
     .done(function(response) {
@@ -196,7 +216,7 @@ class App extends React.Component {
 
   getBillTotal() {
     $.ajax({
-      url: "legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
       method: "GET"
     })
     .done(function(response) {
@@ -206,9 +226,9 @@ class App extends React.Component {
       var sessionYear = parseInt(this.state.year.sessionYear)
       for (var i = 1; i < Math.ceil(billTotal/100); i+=1) {
         let offset = i * 100
-        if ( i === 1) { allBillz.push($.get("legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
+        if ( i === 1) { allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
       } else {
-        allBillz.push($.get("legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
+        allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
         }
       }
       let test = []
@@ -224,8 +244,8 @@ class App extends React.Component {
           var yaysArray = yays.map(function(votes) { if (votes === undefined) { return votes = {size: 0} } else { return votes } });
 
           var senatorVotes = allBills.map(bill => {
-            if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "yay" }
-            else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast).length > 0) { return "nay" }
+            if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.AYE.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast || senator.shortName.toUpperCase() === this.state.senatorInfo.short).length > 0) { return "yay" }
+            else if (bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY && bill.result.votes.items[bill.result.votes.items.length-1].memberVotes.items.NAY.items.filter(senator => senator.fullName === this.state.senatorInfo.fullName || senator.fullName === this.state.senatorInfo.firstLast || senator.shortName === this.state.senatorInfo.short).length > 0) { return "nay" }
             else { return "n/a" }
           })
 
@@ -337,7 +357,7 @@ class App extends React.Component {
 
   sponsoredClicked() {
     if (this.state.senatorInfo.fullName) {
-      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
+      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName  || bill.sponsor.includes(this.state.senatorInfo.short));
 
       this.setState({
         currentBills: senatorSponsoredBills,
