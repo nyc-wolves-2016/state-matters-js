@@ -15,10 +15,11 @@ import jQueryify from './custom_jquery.js';
 class App extends React.Component {
   constructor() {
     super();
-    this.geocodeIt = this.geocodeIt.bind(this);
+    // this.geocodeIt = this.geocodeIt.bind(this);
     this.compare = this.compare.bind(this);
     // this.getBills = this.getBills.bind(this);
     this.getBillTotal = this.getBillTotal.bind(this);
+    this.getSenator = this.getSenator.bind(this);
     this.closeBillsClicked = this.closeBillsClicked.bind(this);
     this.sponsoredClicked = this.sponsoredClicked.bind(this);
     this.keywordSearch = this.keywordSearch.bind(this);
@@ -43,23 +44,23 @@ class App extends React.Component {
     }
   }
 
-  geocodeIt(fullAddress){
-    this.setState({showLoading: true, showForm: false, showLoadingLine: true})
-    $.ajax({
-      url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
-    })
-    .done(response => {
-      var lat = response.results[0].geometry.location.lat
-      var lng = response.results[0].geometry.location.lng
-      this.getSenator(lat + '%2C%20' + lng )
-      // this.getAssembly(lat + '%2C%20' + lng )
-      // this.getCongress(lat + '%2C%20' + lng )
-    })
-  }
+  // geocodeIt(fullAddress){
+  //   this.setState({showLoading: true, showForm: false, showLoadingLine: true})
+  //   $.ajax({
+  //     url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
+  //   })
+  //   .done(response => {
+  //     var lat = response.results[0].geometry.location.lat
+  //     var lng = response.results[0].geometry.location.lng
+  //     this.getSenator(lat + '%2C%20' + lng )
+  //     // this.getAssembly(lat + '%2C%20' + lng )
+  //     // this.getCongress(lat + '%2C%20' + lng )
+  //   })
+  // }
 
   getSenator(fullAddress){
     $.ajax({
-      url:"https://www.nysenate.gov/find-my-senator?search=true&addr1=2+deerfield+pl&city=beacon&zip5=12508",
+      url:"https://www.nysenate.gov/find-my-senator?search=true&addr1=" + fullAddress,
       method: "get",
       dataType: "text"
     })
@@ -68,15 +69,17 @@ class App extends React.Component {
       var name = $(doc).find(".c-find-my-senator--senator-link").first().text().trim();
       var district = $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2)
       var website = $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
-      // Move the split up here for middle name, use the last name and hten upcase for short integrate that into or calls for when people have shortened first names like sue
+
       var senatorFirstLastSplit = name.split(" ");
-      var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      if (senatorFirstLastSplit.length > 2) {
+        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      }
       var repObj = {
         district: $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2),
         fullName: name,
-        firstLast: senatorFirstLast,
-        short: senatorFirstLastSplit[2],
-       web: $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
+        firstLast: senatorFirstLast || name,
+        short: senatorFirstLastSplit[2] || senatorFirstLastSplit[1],
+        web: $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
       };
       this.setState({senatorInfo: repObj})
       this.getBillTotal();
@@ -86,14 +89,16 @@ class App extends React.Component {
       var name = $(doc).find(".c-find-my-senator--senator-link").first().text().trim();
       var district = $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2)
       var website = $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
-      // Move the split up here for middle name, use the last name and hten upcase for short integrate that into or calls for when people have shortened first names like sue
+
       var senatorFirstLastSplit = name.split(" ");
-      var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      if (senatorFirstLastSplit.length > 2) {
+        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      }
       var repObj = {
         district: $(doc).find(".c-find-my-senator--senator-link").first().parent().siblings().text().slice(-2),
         fullName: name,
-        firstLast: senatorFirstLast,
-        short: senatorFirstLastSplit[2],
+        firstLast: senatorFirstLast || name,
+        short: senatorFirstLastSplit[2] || senatorFirstLastSplit[1],
         web: $(doc).find(".c-find-my-senator--senator-link").first().attr("href")
       };
       this.setState({senatorInfo: repObj})
@@ -174,9 +179,15 @@ class App extends React.Component {
 
       var senatorName = response.result.items[0].fullName;
       var districtCode = response.result.items[0].districtCode;
+      var splitName = senatorName.split(" ")
+      if (splitName.length > 2) {
+        var formattedName = splitName[0] + "-" + splitName[1][0] + "-" + splitName[2]
+      } else { var formattedName = splitName[0] + "-" + splitName[1]}
+      
 
+      if (this.state.senatorInfo.short !== splitName[1] && this.state.senatorInfo.short !== splitName[2])
       this.setState({
-        senatorInfo: { fullName: senatorName, district: districtCode }
+        senatorInfo: { fullName: senatorName, district: districtCode, web: "https://www.nysenate.gov/senators/" +  formattedName}
       })
 
       if (this.state.bills[this.state.year.billYear]) {
@@ -457,7 +468,7 @@ class App extends React.Component {
       <div ref="test" id="fullpage">
         <div className="section">
           <div id="landingPageBG" className="slide">
-            <AddressForm hideIt={this.state.showForm} getAddress={this.geocodeIt}/> :
+            <AddressForm hideIt={this.state.showForm} getAddress={this.getSenator}/> :
             {/* { this.state.showLoading ? <Loading /> : null } */}
             <h2 id="loading-line">{loadingText}</h2>
             <h1 id="main-font">STATE MATTERS</h1>
