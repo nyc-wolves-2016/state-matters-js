@@ -46,14 +46,23 @@ class App extends React.Component {
   geocodeIt(fullAddress){
     this.setState({showLoading: true, showForm: false, showLoadingLine: true})
     $.ajax({
-      url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
+      url: 'https://www.googleapis.com/civicinfo/v2/representatives/?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&roles=legislatorUpperBody&address=' + fullAddress
     })
     .done(response => {
-      var lat = response.results[0].geometry.location.lat
-      var lng = response.results[0].geometry.location.lng
-      this.getSenator(lat + '%2C%20' + lng )
-      // this.getAssembly(lat + '%2C%20' + lng )
-      // this.getCongress(lat + '%2C%20' + lng )
+      debugger;
+      var senatorFirstLastSplit = response.officials[2].toString().split(" ");
+      var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+      var district = []
+      for (key in response.divisions) {if (response.divisions[key].name.includes("New York State Senate district")) {district.push(response.divisions[key].name)}}
+      var districtNum = district.toString().slice(district.length-2, district.length)
+      debugger;
+      var repObj = {
+          district: districtNum,
+          fullName: response.officials[2],
+          firstLast: senatorFirstLast,
+          web: response.officials[2].urls.first,
+          population: foundRep[3]
+      }
     })
   }
 
