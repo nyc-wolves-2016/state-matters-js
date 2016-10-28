@@ -15,6 +15,9 @@ State Matters is a React.js project built in Node.js that allows NY residents to
 
 State Matters uses NY's [Open Legislation API](https://github.com/nysenate/OpenLegislation), the Google Maps API for basic geocoding, and utlizes libraries like [Fullpage.js](https://github.com/alvarotrigo/fullPage.js/) and Materialize for its style and feel.
 
+##Known Issues
+* When entering a new address while on a different year from 2016, the new Senator's info for 2016 appears under the banner of the previously selected year.
+
 ##Stretch Goals
 * Include Assembly persons
 * Notify users of upcoming elections
