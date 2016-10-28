@@ -46,47 +46,60 @@ class App extends React.Component {
   geocodeIt(fullAddress){
     this.setState({showLoading: true, showForm: false, showLoadingLine: true})
     $.ajax({
-      url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&address=' + fullAddress
+      url: 'https://www.googleapis.com/civicinfo/v2/representatives/?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&roles=legislatorUpperBody&address=' + fullAddress
     })
     .done(response => {
-      var lat = response.results[0].geometry.location.lat
-      var lng = response.results[0].geometry.location.lng
-      this.getSenator(lat + '%2C%20' + lng )
-      // this.getAssembly(lat + '%2C%20' + lng )
-      // this.getCongress(lat + '%2C%20' + lng )
-    })
-  }
-
-  getSenator(latLng) {
-    $.ajax({
-      url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201KfhMo_HSAp3kq5Yayca22HrIhEjJLa_c_s6jd2Q%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListnysen&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349224&_=1476457378113",
-      method: 'get'
-    })
-    .done(function(response) {
-      var foundRep = response;
-      foundRep = $.parseJSON(foundRep.slice(41, -2));
-      foundRep = foundRep.rows[0];
-      // var foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
-      var senatorFirstLast = foundRep[1].split(" ");
-      var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+      var senatorFirstLastSplit = response.officials[2].name.split(" ");
+      if (senatorFirstLastSplit.length > 2) {
+        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      } else {
+        var senatorFirstLast = response.officials[2].name
+      }
+      var district = []
+      for (var key in response.divisions) {if (response.divisions[key].name.includes("New York State Senate district")) {district.push(response.divisions[key].name)}}
+      var districtStr = district.toString()
+      var districtNum = districtStr.slice(districtStr.length-2, districtStr.length)
       var repObj = {
-        district: foundRep[0],
-        fullName: foundRep[1],
-        firstLast: senatorFirstLast,
-        web: foundRep[2],
-        population: foundRep[3]
-    };
-      foundRep.push(senatorFirstLast);
-      this.setState({senatorInfo: repObj});
-      // save district to its own state
-      // retrieve later when non-default year is specified
+          district: districtNum,
+          fullName: response.officials[2].name,
+          firstLast: senatorFirstLast,
+          web: response.officials[2].urls.first,
+      }
+      this.setState({senatorInfo: repObj})
       this.getBillTotal();
-
-
-    }.bind(this))
-    .fail(function(response) {
-    }.bind(this));
+    })
   }
+
+  // getSenator(latLng) {
+  //   $.ajax({
+  //     url: "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20DISTRICT%2C%20REP_NAME%2C%20REP_URL%2C%20POPULATION%20%20%20FROM%201KfhMo_HSAp3kq5Yayca22HrIhEjJLa_c_s6jd2Q%20%20WHERE%20geometry%20not%20equal%20to%20%27%27%20AND%20ST_INTERSECTS(geometry%2C%20CIRCLE(LATLNG(" + latLng + ")%2C1))&callback=MapsLib.displayListnysen&key=AIzaSyAHOjsb-JbuJn1lC6OzUNH-jlDT_KA_FwE&callback=jQuery17106865557795366708_1476457349224&_=1476457378113",
+  //     method: 'get'
+  //   })
+  //   .done(function(response) {
+  //     var foundRep = response;
+  //     foundRep = $.parseJSON(foundRep.slice(41, -2));
+  //     foundRep = foundRep.rows[0];
+  //     // var foundRep = [42, "Susan J. Serino", "www.google.com", "222,333"]
+  //     var senatorFirstLast = foundRep[1].split(" ");
+  //     var senatorFirstLast = senatorFirstLast[0] + " " + senatorFirstLast[2];
+  //     var repObj = {
+  //       district: foundRep[0],
+  //       fullName: foundRep[1],
+  //       firstLast: senatorFirstLast,
+  //       web: foundRep[2],
+  //       population: foundRep[3]
+  //   };
+  //     foundRep.push(senatorFirstLast);
+  //     this.setState({senatorInfo: repObj});
+  //     // save district to its own state
+  //     // retrieve later when non-default year is specified
+  //     this.getBillTotal();
+
+
+  //   }.bind(this))
+  //   .fail(function(response) {
+  //   }.bind(this));
+  // }
 
   // getAssembly(latLng) {
   //   $.ajax({
@@ -123,7 +136,7 @@ class App extends React.Component {
 
     var district = this.state.senatorInfo.district;
     $.ajax({
-      url: "legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
+      url: "http://legislation.nysenate.gov/api/3/members/search?term=districtCode:" + district +" AND chamber:'SENATE' AND sessionYear:" + chosenSessionYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&full=true",
       method: "GET"
     })
     .done(function(response) {
@@ -172,7 +185,7 @@ class App extends React.Component {
 
   getBillTotal() {
     $.ajax({
-      url: "legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
+      url: "http://legislation.nysenate.gov/api/3/bills/" + this.state.year.sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + this.state.year.billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&limit=1",
       method: "GET"
     })
     .done(function(response) {
@@ -182,9 +195,9 @@ class App extends React.Component {
       var sessionYear = parseInt(this.state.year.sessionYear)
       for (var i = 1; i < Math.ceil(billTotal/100); i+=1) {
         let offset = i * 100
-        if ( i === 1) { allBillz.push($.get("legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
+        if ( i === 1) { allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + i + "&limit=100&full=true"))
       } else {
-        allBillz.push($.get("legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
+        allBillz.push($.get("http://legislation.nysenate.gov/api/3/bills/" + sessionYear +"/search?term=\\*voteType:'FLOOR'%20AND%20year:" + billYear + "&key=042A2V22xkhJDsvE22rtOmKKpznUpl9Y&offset=" + offset + "&limit=100&full=true"))
         }
       }
       let test = []
