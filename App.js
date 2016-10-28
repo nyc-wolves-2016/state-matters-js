@@ -49,12 +49,7 @@ class App extends React.Component {
       url: 'https://www.googleapis.com/civicinfo/v2/representatives/?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&roles=legislatorUpperBody&address=' + fullAddress
     })
     .done(response => {
-      var senatorFirstLastSplit = response.officials[2].name.split(" ");
-      if (senatorFirstLastSplit.length > 2) {
-        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
-      } else {
-        var senatorFirstLast = response.officials[2].name
-      }
+      var name = response.officials[2].name
       var district = []
       for (var key in response.divisions) {if (response.divisions[key].name.includes("New York State Senate district")) {district.push(response.divisions[key].name)}}
       var districtStr = district.toString()
@@ -66,8 +61,8 @@ class App extends React.Component {
       debugger;
       var repObj = {
           district: districtNum,
-          fullName: response.officials[2].name,
-          firstLast: senatorFirstLast || response.officials[2].name,
+          fullName: name,
+          firstLast: senatorFirstLast || name,
           short: senatorFirstLastSplit[2] || senatorFirstLastSplit[1],
           web: response.officials[2].urls[0]
       }
