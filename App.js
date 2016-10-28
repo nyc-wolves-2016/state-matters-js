@@ -49,21 +49,22 @@ class App extends React.Component {
       url: 'https://www.googleapis.com/civicinfo/v2/representatives/?key=AIzaSyAiRgU_ysVxPfbMqVQnOEeN4-aLW4OMEw4&roles=legislatorUpperBody&address=' + fullAddress
     })
     .done(response => {
-      var senatorFirstLastSplit = response.officials[2].name.split(" ");
-      if (senatorFirstLastSplit.length > 2) {
-        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
-      } else {
-        var senatorFirstLast = response.officials[2].name
-      }
+      var name = response.officials[2].name
       var district = []
       for (var key in response.divisions) {if (response.divisions[key].name.includes("New York State Senate district")) {district.push(response.divisions[key].name)}}
       var districtStr = district.toString()
       var districtNum = districtStr.slice(districtStr.length-2, districtStr.length)
+      var senatorFirstLastSplit = name.split(" ");
+      if (senatorFirstLastSplit.length > 2) {
+        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      }
+      debugger;
       var repObj = {
           district: districtNum,
-          fullName: response.officials[2].name,
-          firstLast: senatorFirstLast,
-          web: response.officials[2].urls.first,
+          fullName: name,
+          firstLast: senatorFirstLast || name,
+          short: senatorFirstLastSplit[2] || senatorFirstLastSplit[1],
+          web: response.officials[2].urls[0]
       }
       this.setState({senatorInfo: repObj})
       this.getBillTotal();
@@ -143,10 +144,17 @@ class App extends React.Component {
 
       var senatorName = response.result.items[0].fullName;
       var districtCode = response.result.items[0].districtCode;
+      var splitName = senatorName.split(" ")
+      if (splitName.length > 2) {
+        var formattedName = splitName[0] + "-" + splitName[1][0] + "-" + splitName[2]
+      } else { var formattedName = splitName[0] + "-" + splitName[1]}
+      
 
+      if (this.state.senatorInfo.short !== splitName[1] && this.state.senatorInfo.short !== splitName[2])
       this.setState({
-        senatorInfo: { fullName: senatorName, district: districtCode }
+        senatorInfo: { fullName: senatorName, district: districtCode, web: "https://www.nysenate.gov/senators/" +  formattedName}
       })
+
 
       if (this.state.bills[this.state.year.billYear]) {
         var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
@@ -325,8 +333,9 @@ class App extends React.Component {
   }
 
   sponsoredClicked() {
+    debugger;
     if (this.state.senatorInfo.fullName) {
-      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
+      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName  || bill.sponsor.includes(this.state.senatorInfo.short));
 
       this.setState({
         currentBills: senatorSponsoredBills,
