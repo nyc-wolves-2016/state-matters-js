@@ -67,7 +67,8 @@ class App extends React.Component {
           district: districtNum,
           fullName: response.officials[2].name,
           firstLast: senatorFirstLast || response.officials[2].name,
-          web: response.officials[2].urls.first,
+          short: senatorFirstLastSplit[2] || senatorFirstLastSplit[1],
+          web: response.officials[2].urls.first
       }
       this.setState({senatorInfo: repObj})
       this.getBillTotal();
