@@ -59,10 +59,14 @@ class App extends React.Component {
       for (var key in response.divisions) {if (response.divisions[key].name.includes("New York State Senate district")) {district.push(response.divisions[key].name)}}
       var districtStr = district.toString()
       var districtNum = districtStr.slice(districtStr.length-2, districtStr.length)
+      var senatorFirstLastSplit = name.split(" ");
+      if (senatorFirstLastSplit.length > 2) {
+        var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
+      }
       var repObj = {
           district: districtNum,
           fullName: response.officials[2].name,
-          firstLast: senatorFirstLast,
+          firstLast: senatorFirstLast || response.officials[2].name,
           web: response.officials[2].urls.first,
       }
       this.setState({senatorInfo: repObj})
