@@ -148,10 +148,17 @@ class App extends React.Component {
 
       var senatorName = response.result.items[0].fullName;
       var districtCode = response.result.items[0].districtCode;
+      var splitName = senatorName.split(" ")
+      if (splitName.length > 2) {
+        var formattedName = splitName[0] + "-" + splitName[1][0] + "-" + splitName[2]
+      } else { var formattedName = splitName[0] + "-" + splitName[1]}
+      
 
+      if (this.state.senatorInfo.short !== splitName[1] && this.state.senatorInfo.short !== splitName[2])
       this.setState({
-        senatorInfo: { fullName: senatorName, district: districtCode }
+        senatorInfo: { fullName: senatorName, district: districtCode, web: "https://www.nysenate.gov/senators/" +  formattedName}
       })
+
 
       if (this.state.bills[this.state.year.billYear]) {
         var cleanCloserVoteBills = this.state.bills[this.state.year.billYear].filter(bill => Math.abs(bill.yay - bill.nay) < 20);
