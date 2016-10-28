@@ -63,12 +63,13 @@ class App extends React.Component {
       if (senatorFirstLastSplit.length > 2) {
         var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
       }
+      debugger;
       var repObj = {
           district: districtNum,
           fullName: response.officials[2].name,
           firstLast: senatorFirstLast || response.officials[2].name,
           short: senatorFirstLastSplit[2] || senatorFirstLastSplit[1],
-          web: response.officials[2].urls.first
+          web: response.officials[2].urls[0]
       }
       this.setState({senatorInfo: repObj})
       this.getBillTotal();
@@ -337,6 +338,7 @@ class App extends React.Component {
   }
 
   sponsoredClicked() {
+    debugger;
     if (this.state.senatorInfo.fullName) {
       var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName  || bill.sponsor.includes(this.state.senatorInfo.short));
 
