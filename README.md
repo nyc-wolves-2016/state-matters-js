@@ -13,7 +13,7 @@ But if a person wants to be an informed voter, it shouldn't be so hard.
 
 State Matters is a React.js project built in Node.js that allows NY residents to input their address, learn who their state senator is, and immediately see how that senator has been voting on the year's most contentious bills to date.  Users can also see what kinds of bills their representative has been sponsoring, the status of those bills, and all of this can be filtered by key words that interest the voter.
 
-State Matters uses NY's [Open Legislation API](https://github.com/nysenate/OpenLegislation), the Google Maps API for basic geocoding, and utlizes libraries like [Fullpage.js](https://github.com/alvarotrigo/fullPage.js/) and Materialize for its style and feel.
+State Matters uses NY's [Open Legislation API](https://github.com/nysenate/OpenLegislation), Google's [Civic Information API](https://developers.google.com/civic-information/), and utlizes libraries like [Fullpage.js](https://github.com/alvarotrigo/fullPage.js/) and Materialize for its style and feel.
 
 ##Known Issues
 * When entering a new address while on a different year from 2016, the new Senator's info for 2016 appears under the banner of the previously selected year.
