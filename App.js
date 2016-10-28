@@ -326,7 +326,7 @@ class App extends React.Component {
 
   sponsoredClicked() {
     if (this.state.senatorInfo.fullName) {
-      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName);
+      var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName  || bill.sponsor.includes(this.state.senatorInfo.short));
 
       this.setState({
         currentBills: senatorSponsoredBills,
