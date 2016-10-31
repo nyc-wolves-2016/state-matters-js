@@ -1,5 +1,4 @@
 function setupListeners() {
-  console.log("we runnin dis");
 
   'use strict';
 
