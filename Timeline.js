@@ -24,7 +24,6 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
       $.fn.fullpage.reBuild();
     }
 
-    // debugger;
     // if (this.props.closeVoteClicked) {
     //
     // }
