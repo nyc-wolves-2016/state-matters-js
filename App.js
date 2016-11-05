@@ -6,8 +6,6 @@ import Bill from './Bill';
 import jquery from "jquery";
 import $ from "jquery";
 import setupListeners from './timeline_fcns';
-import {IScroll} from 'fullpage.js';
-import fullpage from 'fullpage.js';
 import Loading from './Loading.js';
 import jQueryify from './custom_jquery.js';
 
@@ -58,7 +56,6 @@ class App extends React.Component {
       if (senatorFirstLastSplit.length > 2) {
         var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
       }
-      debugger;
       var repObj = {
           district: districtNum,
           fullName: name,
@@ -146,11 +143,12 @@ class App extends React.Component {
       var districtCode = response.result.items[0].districtCode;
       var splitName = senatorName.split(" ")
       if (splitName.length > 2) {
-        var formattedName = splitName[0] + "-" + splitName[1][0] + "-" + splitName[2]
-      } else { var formattedName = splitName[0] + "-" + splitName[1]}
+        var formattedName = splitName[0] + "-" + splitName[1][0] + "-" + splitName[2]        
+        var lastName = splitName[2]
+      } else { var formattedName = splitName[0] + "-" + splitName[1]
+               var lastName = splitName[1]}
       
-
-      if (this.state.senatorInfo.short !== splitName[1] && this.state.senatorInfo.short !== splitName[2])
+      if (this.state.senatorInfo.short !== lastName)
       this.setState({
         senatorInfo: { fullName: senatorName, district: districtCode, web: "https://www.nysenate.gov/senators/" +  formattedName}
       })
@@ -333,7 +331,6 @@ class App extends React.Component {
   }
 
   sponsoredClicked() {
-    debugger;
     if (this.state.senatorInfo.fullName) {
       var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName  || bill.sponsor.includes(this.state.senatorInfo.short));
 
