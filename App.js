@@ -56,7 +56,6 @@ class App extends React.Component {
       if (senatorFirstLastSplit.length > 2) {
         var senatorFirstLast = senatorFirstLastSplit[0] + " " + senatorFirstLastSplit[2];
       }
-      debugger;
       var repObj = {
           district: districtNum,
           fullName: name,
@@ -332,7 +331,6 @@ class App extends React.Component {
   }
 
   sponsoredClicked() {
-    debugger;
     if (this.state.senatorInfo.fullName) {
       var senatorSponsoredBills = this.state.bills[this.state.year.billYear].filter(bill => bill.sponsor === this.state.senatorInfo.firstLast || bill.sponsor === this.state.senatorInfo.fullName  || bill.sponsor.includes(this.state.senatorInfo.short));
 
