@@ -6,8 +6,6 @@ import Bill from './Bill';
 import jquery from "jquery";
 import $ from "jquery";
 import setupListeners from './timeline_fcns';
-import {IScroll} from 'fullpage.js';
-import fullpage from 'fullpage.js';
 import Loading from './Loading.js';
 import jQueryify from './custom_jquery.js';
 
