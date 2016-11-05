@@ -147,10 +147,11 @@ class App extends React.Component {
       var splitName = senatorName.split(" ")
       if (splitName.length > 2) {
         var formattedName = splitName[0] + "-" + splitName[1][0] + "-" + splitName[2]
-      } else { var formattedName = splitName[0] + "-" + splitName[1]}
+        var lastName = splitName[2]
+      } else { var formattedName = splitName[0] + "-" + splitName[1]
+               var lastName = splitName[1]}
       
-
-      if (this.state.senatorInfo.short !== splitName[1] && this.state.senatorInfo.short !== splitName[2])
+      if (this.state.senatorInfo.short !== lastName)
       this.setState({
         senatorInfo: { fullName: senatorName, district: districtCode, web: "https://www.nysenate.gov/senators/" +  formattedName}
       })
