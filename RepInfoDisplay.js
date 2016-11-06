@@ -7,6 +7,7 @@ class RepInfoDisplay extends React.Component {
 
   render() {
     let {fullName, district, web} = this.props.repDisplay
+    if (!fullName) { var webInfo = null } else { var webInfo = fullName + "'s Website"}
     return (
 
 
@@ -28,7 +29,7 @@ class RepInfoDisplay extends React.Component {
               <li className="collection-item avatar col s4">
 
 
-                <p id="senatorLink"><a target="_blank" href={web}>{fullName}'s Website</a></p>
+                <p id="senatorLink"><a target="_blank" href={web}>{webInfo}</a></p>
               </li>
         
             </ul>
